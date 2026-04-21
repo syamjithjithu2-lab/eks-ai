@@ -60,6 +60,20 @@ export default function App() {
         return () => { socket.removeAllListeners(); socket.disconnect(); };
     }, []);
 
+    const handleUpdateIncidentLogs = (incidentId, newLogs) => {
+        setIncidents(prev => prev.map(inc => 
+            inc.id === incidentId ? { ...inc, logs: newLogs } : inc
+        ));
+        
+        // Also update selectedIncident if it matches to sync the UI
+        setSelectedIncident(prev => {
+            if (prev && prev.id === incidentId) {
+                return { ...prev, logs: newLogs };
+            }
+            return prev;
+        });
+    };
+
     // Memoized filtered data to prevent unnecessary re-renders on socket updates
     const filteredClusters = useMemo(() => {
         let result = clusters;
@@ -126,20 +140,23 @@ export default function App() {
 
             case 'incidents':
                 return (
-                    <div className="p-4 md:p-6 lg:p-8">
-                        <h1 className="text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-3">
+                    <div className="h-full flex flex-col p-4 md:p-6 overflow-hidden">
+                        <h1 className="text-xl md:text-2xl font-bold mb-3 flex items-center gap-3 flex-shrink-0">
                             All Incidents
-                            <span className="text-red-500 text-sm bg-red-500/20 px-3 py-1 rounded-full">LIVE</span>
+                            <span className="text-red-500 text-xs bg-red-500/20 px-3 py-1 rounded-full border border-red-500/10">LIVE</span>
                         </h1>
-                        <div className="flex gap-8">
-                            <div className="w-5/12">
+                        <div className="flex-1 flex gap-4 md:gap-6 min-h-0">
+                            <div className="w-5/12 h-full">
                                 <IncidentList
                                     incidents={incidents}
                                     onSelect={setSelectedIncident}
                                 />
                             </div>
-                            <div className="w-7/12">
-                                <IncidentAnalysis incident={selectedIncident} />
+                            <div className="w-7/12 h-full">
+                                <IncidentAnalysis 
+                                    incident={selectedIncident} 
+                                    onUpdateLogs={handleUpdateIncidentLogs}
+                                />
                             </div>
                         </div>
                     </div>
@@ -192,7 +209,7 @@ export default function App() {
                     isConnected={isConnected}
                 />
 
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
                     {renderPage()}
                 </div>
             </div>

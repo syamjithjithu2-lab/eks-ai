@@ -50,22 +50,22 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
     }
 
     return (
-        <div className="grid grid-cols-12 grid-responsive-3 gap-8">
+        <div className="grid grid-cols-12 grid-responsive-3 gap-4 md:gap-6 lg:gap-8">
             {/* Avg CPU Usage */}
-            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group luminous-card flex flex-col justify-between">
-                <div className="flex justify-between items-start mb-6">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100 group-hover:scale-110 transition-transform">
-                        <Cpu className="text-indigo-600" size={24} />
+            <div className="col-span-4 glass-card rounded-2xl md:rounded-[2rem] lg:rounded-[3rem] p-4 md:p-6 lg:p-8 group luminous-card flex flex-col justify-between">
+                <div className="flex justify-between items-start mb-3 md:mb-6">
+                    <div className="w-8 h-8 md:w-12 md:h-12 bg-indigo-50 rounded-xl md:rounded-2xl flex items-center justify-center border border-indigo-100 group-hover:scale-110 transition-transform">
+                        <Cpu className="text-indigo-600" size={16} />
                     </div>
                 </div>
                 <div>
-                    <p className="text-[9px] md:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "CPU USAGE" : "AVG CPU USAGE"}</p>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black text-slate-800 tracking-tighter leading-none">{avgCpu}</p>
-                        <p className="text-lg lg:text-2xl font-bold text-slate-400 font-tech">%</p>
+                    <p className="text-[8px] md:text-[9px] lg:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1 md:mb-2">{selectedPod ? "CPU USAGE" : "AVG CPU USAGE"}</p>
+                    <div className="flex items-baseline gap-1 md:gap-2">
+                        <p className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-slate-800 tracking-tighter leading-none">{avgCpu}</p>
+                        <p className="text-base md:text-xl lg:text-2xl font-bold text-slate-400">%</p>
                     </div>
                 </div>
-                <div className="mt-10 h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
+                <div className="mt-4 md:mt-10 h-2 md:h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
                     <div
                         className="h-full bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-500 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(99,102,241,0.4)]"
                         style={{ width: `${Math.min(avgCpu, 100)}%` }}
@@ -74,20 +74,20 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             </div>
 
             {/* Memory Pressure */}
-            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group luminous-card flex flex-col justify-between">
-                <div className="flex justify-between items-start mb-6">
-                    <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center border border-rose-100 group-hover:scale-110 transition-transform">
-                        <Database className="text-rose-500" size={24} />
+            <div className="col-span-4 glass-card rounded-2xl md:rounded-[2rem] lg:rounded-[3rem] p-4 md:p-6 lg:p-8 group luminous-card flex flex-col justify-between">
+                <div className="flex justify-between items-start mb-3 md:mb-6">
+                    <div className="w-8 h-8 md:w-12 md:h-12 bg-rose-50 rounded-xl md:rounded-2xl flex items-center justify-center border border-rose-100 group-hover:scale-110 transition-transform">
+                        <Database className="text-rose-500" size={16} />
                     </div>
                 </div>
                 <div>
-                    <p className="text-[9px] md:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "RAM PRESSURE" : "AVG RAM PRESSURE"}</p>
-                    <div className="flex items-baseline gap-2">
-                        <p className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black text-slate-800 tracking-tighter leading-none">{memoryPressure}</p>
-                        <p className="text-lg lg:text-2xl font-bold text-slate-400 font-tech">%</p>
+                    <p className="text-[8px] md:text-[9px] lg:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1 md:mb-2">{selectedPod ? "RAM PRESSURE" : "AVG RAM PRESSURE"}</p>
+                    <div className="flex items-baseline gap-1 md:gap-2">
+                        <p className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-slate-800 tracking-tighter leading-none">{memoryPressure}</p>
+                        <p className="text-base md:text-xl lg:text-2xl font-bold text-slate-400">%</p>
                     </div>
                 </div>
-                <div className="mt-10 h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
+                <div className="mt-4 md:mt-10 h-2 md:h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
                     <div
                         className="h-full bg-gradient-to-r from-orange-400 via-rose-500 to-red-600 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(244,63,94,0.4)]"
                         style={{ width: `${memoryPressure}%` }}
@@ -96,19 +96,19 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             </div>
 
             {/* Chart Overview */}
-            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group flex flex-col">
-                <div className="flex justify-between items-start mb-8">
+            <div className="col-span-4 glass-card rounded-2xl md:rounded-[2rem] lg:rounded-[3rem] p-4 md:p-6 lg:p-8 group flex flex-col">
+                <div className="flex justify-between items-start mb-4 md:mb-8">
                     <div>
-                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1">{chartTitle}</p>
-                        <p className="text-xs font-bold text-indigo-500 uppercase tracking-widest">{chartEntityCount}</p>
+                        <p className="text-[9px] md:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1">{chartTitle}</p>
+                        <p className="text-[9px] md:text-xs font-bold text-indigo-500 uppercase tracking-widest">{chartEntityCount}</p>
                     </div>
-                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100 group-hover:rotate-12 transition-transform">
-                        <Activity className="text-slate-400" size={20} />
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-50 rounded-lg md:rounded-xl flex items-center justify-center border border-slate-100 group-hover:rotate-12 transition-transform">
+                        <Activity className="text-slate-400" size={16} />
                     </div>
                 </div>
 
                 <div className="flex-1 flex flex-col justify-end">
-                    <ResponsiveContainer width="100%" height={150}>
+                    <ResponsiveContainer width="100%" height={100}>
                         <BarChart data={healthData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
@@ -125,19 +125,19 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
                                 dataKey="name" 
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: '#64748b', fontSize: 9, fontWeight: 900, fontFamily: 'Inter' }}
-                                dy={10}
+                                tick={{ fill: '#64748b', fontSize: 8, fontWeight: 900, fontFamily: 'Inter' }}
+                                dy={8}
                                 interval={0} 
                             />
                             <Tooltip 
-                                cursor={{ fill: 'rgba(99, 102, 241, 0.04)', radius: 12 }}
+                                cursor={{ fill: 'rgba(99, 102, 241, 0.04)', radius: 8 }}
                                 contentStyle={{ 
-                                    background: 'rgba(255, 255, 255, 0.95)', 
+                                    background: 'rgba(255,255,255,0.95)', 
                                     backdropFilter: 'blur(12px)',
-                                    border: '1px solid rgba(255, 255, 255, 0.5)',
-                                    borderRadius: '16px',
-                                    padding: '12px',
-                                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                                    border: '1px solid rgba(255,255,255,0.5)',
+                                    borderRadius: '12px',
+                                    padding: '8px 12px',
+                                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.05)',
                                     fontWeight: 900,
                                     fontSize: '10px',
                                     color: '#0f172a'
@@ -146,8 +146,8 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
                             />
                             <Bar 
                                 dataKey="cpu" 
-                                radius={[10, 10, 0, 0]} 
-                                barSize={32}
+                                radius={[6, 6, 0, 0]} 
+                                barSize={20}
                                 animationDuration={1500}
                                 animationEasing="ease-out"
                             >
@@ -161,12 +161,12 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
-                    <div className="mt-4 flex items-center justify-between px-2 pt-4 border-t border-slate-50">
-                         <div className="flex items-center gap-2">
-                             <TrendingUp size={14} className="text-emerald-500" />
-                             <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Normal Range</span>
+                    <div className="mt-2 md:mt-4 flex items-center justify-between px-1 md:px-2 pt-3 md:pt-4 border-t border-slate-50">
+                         <div className="flex items-center gap-1.5">
+                             <TrendingUp size={12} className="text-emerald-500" />
+                             <span className="text-[8px] md:text-[10px] font-black text-slate-700 uppercase tracking-widest">Normal Range</span>
                          </div>
-                         <span className="text-[10px] font-black text-slate-400 font-tech">SYS_STABLE</span>
+                         <span className="text-[8px] md:text-[10px] font-black text-slate-400">SYS_STABLE</span>
                     </div>
                 </div>
             </div>

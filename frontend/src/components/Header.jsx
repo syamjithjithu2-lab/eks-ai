@@ -9,8 +9,8 @@ export default function Header({
     isConnected
 }) {
     return (
-        <div className="h-20 glass-header flex items-center justify-between px-4 md:px-8 lg:px-10 z-40">
-            <div className="flex items-center gap-2 md:gap-4">
+        <div className="h-14 md:h-16 lg:h-20 glass-header flex items-center justify-between px-3 md:px-6 lg:px-10 z-40">
+            <div className="flex items-center gap-1.5 md:gap-3">
 
                 {/* Cluster Select */}
                 <CustomDropdown
@@ -70,31 +70,34 @@ export default function Header({
                                 if (pod) setSelectedPod(pod);
                             }
                         }}
-                        className="min-w-[180px]"
+                        className="min-w-[140px] md:min-w-[180px]"
                     />
                 )}
             </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
                 {isConnected ? (
-                    <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-bold px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm shadow-emerald-50">
+                    <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[9px] md:text-[10px] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
-                        CONNECTED
+                        <span className="hidden sm:inline">CONNECTED</span>
+                        <span className="sm:hidden">OK</span>
                     </div>
                 ) : (
-                    <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm shadow-rose-50">
+                    <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[9px] md:text-[10px] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
                         <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
-                        DISCONNECTED
+                        <span className="hidden sm:inline">DISCONNECTED</span>
+                        <span className="sm:hidden">OFF</span>
                     </div>
                 )}
 
-                <div className="flex items-center gap-4 pl-6 border-l border-slate-200">
-                    <div className="text-right">
-                        <p className="text-sm font-bold text-slate-800">Syamjith</p>
-                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Admin Account</p>
+                <div className="flex items-center gap-2 md:gap-4 pl-3 md:pl-6 border-l border-slate-200">
+                    <div className="text-right hidden sm:block">
+                        <p className="text-xs md:text-sm font-bold text-slate-800">Syamjith</p>
+                        <p className="text-[9px] md:text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Admin Account</p>
                     </div>
-                    <div className="w-11 h-11 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border-2 border-white">
-                        <User size={20} className="text-white" />
+                    <div className="w-8 h-8 md:w-11 md:h-11 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border-2 border-white">
+                        <User size={16} className="text-white md:hidden" />
+                        <User size={20} className="text-white hidden md:block" />
                     </div>
                 </div>
             </div>

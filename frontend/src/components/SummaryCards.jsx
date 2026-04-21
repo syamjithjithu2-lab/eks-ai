@@ -10,19 +10,19 @@ const CARD_DATA = [
 
 export default function SummaryCards() {
     return (
-        <div className="grid grid-cols-5 grid-responsive-5 gap-6">
+        <div className="grid grid-cols-5 grid-responsive-5 gap-3 md:gap-4 lg:gap-6">
             {CARD_DATA.map((card, i) => (
-                <div key={i} className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-5 md:p-8 group luminous-card">
-                    <div className="flex justify-between items-start mb-4 md:mb-6">
-                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center bg-${card.color}-50 border border-${card.color}-100 group-hover:scale-110 transition-transform shadow-sm shadow-${card.color}-50`}>
-                            <card.icon className={`text-${card.color}-500`} size={20} />
+                <div key={i} className="glass-card rounded-xl md:rounded-2xl lg:rounded-[2.5rem] p-3 md:p-5 lg:p-8 group luminous-card">
+                    <div className="flex justify-between items-start mb-2 md:mb-4 lg:mb-6">
+                        <div className={`w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-lg md:rounded-xl lg:rounded-2xl flex items-center justify-center bg-${card.color}-50 border border-${card.color}-100 group-hover:scale-110 transition-transform shadow-sm`}>
+                            <card.icon className={`text-${card.color}-500`} size={14} />
                         </div>
-                        <div className={`w-2 h-2 rounded-full bg-${card.color}-500 animate-pulse mt-2`}></div>
+                        <div className={`w-1.5 h-1.5 rounded-full bg-${card.color}-500 animate-pulse mt-1`}></div>
                     </div>
-                    <p className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] mb-1 md:mb-2">{card.title}</p>
-                    <p className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter group-hover:translate-x-2 transition-transform duration-500">{card.value}</p>
-                    <div className="mt-6">
-                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-xl bg-${card.color}-50 text-${card.color}-600 border border-${card.color}-100/50 uppercase tracking-widest`}>
+                    <p className="text-[8px] md:text-[9px] lg:text-[10px] font-black text-slate-700 uppercase tracking-[0.15em] mb-1">{card.title}</p>
+                    <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-slate-800 tracking-tighter group-hover:translate-x-1 transition-transform duration-500">{card.value}</p>
+                    <div className="mt-2 md:mt-4 lg:mt-6">
+                        <span className={`text-[8px] md:text-[10px] font-black px-2 md:px-4 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-${card.color}-50 text-${card.color}-600 border border-${card.color}-100/50 uppercase tracking-widest`}>
                             {card.status}
                         </span>
                     </div>
