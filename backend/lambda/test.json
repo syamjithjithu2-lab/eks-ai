@@ -1,0 +1,7 @@
+{
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"logs\":[\"2024-04-21T15:00:01Z [INFO] api-gateway-7f8d9: Request processed in 120ms\",\"2024-04-21T15:00:02Z [WARN] api-gateway-7f8d9: Memory usage at 88% of limit\",\"2024-04-21T15:00:03Z [CRITICAL] api-gateway-7f8d9: OOMKilled - container memory limit exceeded (limit: 512Mi)\"],\"incident\":{\"pod\":\"api-gateway-7f8d9\",\"cluster\":\"prod-us-east-1\",\"namespace\":\"default\",\"severity\":\"Critical\"}}"
+}
