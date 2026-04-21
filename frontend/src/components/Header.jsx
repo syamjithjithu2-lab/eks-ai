@@ -1,118 +1,100 @@
-import { ChevronDown, User } from 'lucide-react';
+import { User } from 'lucide-react';
+import CustomDropdown from './CustomDropdown';
 
-export default function Header({ 
-    clusters, 
+export default function Header({
+    clusters,
     selectedCluster, setSelectedCluster,
     selectedNamespace, setSelectedNamespace,
     selectedPod, setSelectedPod,
-    isConnected 
+    isConnected
 }) {
     return (
-        <div className="h-16 border-b border-white/10 bg-black/80 backdrop-blur-lg flex items-center justify-between px-8 z-50">
-            <div className="flex items-center gap-6">
-                
+        <div className="h-20 glass-header flex items-center justify-between px-10 z-40">
+            <div className="flex items-center gap-4">
+
                 {/* Cluster Select */}
-                <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-2 relative">
-                    <span className="text-sm text-gray-400">Cluster:</span>
-                    <select
-                        className="appearance-none bg-transparent outline-none text-white font-medium pr-5 min-w-[100px] cursor-pointer"
-                        value={selectedCluster?.id || ''}
-                        onChange={(e) => {
-                            if (e.target.value === '') {
-                                setSelectedCluster(null);
-                            } else {
-                                const cl = clusters.find(c => c.id === e.target.value);
-                                if (cl) setSelectedCluster(cl);
-                            }
-                            setSelectedNamespace(null);
-                            setSelectedPod(null);
-                        }}
-                    >
-                        <option value="" className="bg-[#1a1a1a] text-white">All Clusters</option>
-                        {clusters.map(c => (
-                            <option key={c.id} value={c.id} className="bg-[#1a1a1a] text-white">{c.name}</option>
-                        ))}
-                    </select>
-                    <ChevronDown size={14} className="absolute right-3 pointer-events-none text-gray-400" />
-                </div>
+                <CustomDropdown
+                    label="Cluster"
+                    options={[
+                        { value: '', label: 'All Clusters' },
+                        ...clusters.map(c => ({ value: c.id, label: c.name }))
+                    ]}
+                    value={selectedCluster?.id || ''}
+                    onChange={(val) => {
+                        if (val === '') {
+                            setSelectedCluster(null);
+                        } else {
+                            const cl = clusters.find(c => c.id === val);
+                            if (cl) setSelectedCluster(cl);
+                        }
+                        setSelectedNamespace(null);
+                        setSelectedPod(null);
+                    }}
+                />
 
                 {/* Namespace Select */}
                 {selectedCluster && (
-                    <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-2 relative">
-                        <span className="text-sm text-gray-400">Namespace:</span>
-                        <select
-                            className="appearance-none bg-transparent outline-none text-white font-medium pr-5 min-w-[100px] cursor-pointer"
-                            value={selectedNamespace?.name || ''}
-                            onChange={(e) => {
-                                if (e.target.value === '') {
-                                    setSelectedNamespace(null);
-                                } else {
-                                    const ns = selectedCluster.namespaces.find(n => n.name === e.target.value);
-                                    if (ns) setSelectedNamespace(ns);
-                                }
-                                setSelectedPod(null);
-                            }}
-                        >
-                            <option value="" className="bg-[#1a1a1a] text-white">All Namespaces</option>
-                            {selectedCluster.namespaces.map(ns => (
-                                <option key={ns.name} value={ns.name} className="bg-[#1a1a1a] text-white">{ns.name}</option>
-                            ))}
-                        </select>
-                        <ChevronDown size={14} className="absolute right-3 pointer-events-none text-gray-400" />
-                    </div>
+                    <CustomDropdown
+                        label="Namespace"
+                        options={[
+                            { value: '', label: 'All Namespaces' },
+                            ...selectedCluster.namespaces.map(ns => ({ value: ns.name, label: ns.name }))
+                        ]}
+                        value={selectedNamespace?.name || ''}
+                        onChange={(val) => {
+                            if (val === '') {
+                                setSelectedNamespace(null);
+                            } else {
+                                const ns = selectedCluster.namespaces.find(n => n.name === val);
+                                if (ns) setSelectedNamespace(ns);
+                            }
+                            setSelectedPod(null);
+                        }}
+                    />
                 )}
 
                 {/* Pod Select */}
                 {selectedNamespace && (
-                    <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-2 relative">
-                        <span className="text-sm text-gray-400">Pod:</span>
-                        <select
-                            className="appearance-none bg-transparent outline-none text-white font-medium pr-5 min-w-[120px] max-w-[200px] cursor-pointer"
-                            value={selectedPod?.id || ''}
-                            onChange={(e) => {
-                                if (e.target.value === '') {
-                                    setSelectedPod(null);
-                                } else {
-                                    const pod = selectedNamespace.pods.find(p => p.id === e.target.value);
-                                    if (pod) setSelectedPod(pod);
-                                }
-                            }}
-                        >
-                            <option value="" className="bg-[#1a1a1a] text-white">All Pods</option>
-                            {selectedNamespace.pods.map(pod => (
-                                <option key={pod.id} value={pod.id} className="bg-[#1a1a1a] text-white">{pod.name}</option>
-                            ))}
-                        </select>
-                        <ChevronDown size={14} className="absolute right-3 pointer-events-none text-gray-400" />
-                    </div>
+                    <CustomDropdown
+                        label="Pod"
+                        options={[
+                            { value: '', label: 'All Pods' },
+                            ...selectedNamespace.pods.map(pod => ({ value: pod.id, label: pod.name }))
+                        ]}
+                        value={selectedPod?.id || ''}
+                        onChange={(val) => {
+                            if (val === '') {
+                                setSelectedPod(null);
+                            } else {
+                                const pod = selectedNamespace.pods.find(p => p.id === val);
+                                if (pod) setSelectedPod(pod);
+                            }
+                        }}
+                        className="min-w-[180px]"
+                    />
                 )}
-
-                <div className="flex items-center gap-2 bg-white/5 rounded-2xl px-4 py-2 text-sm">
-                    Last 30 minutes
-                    <ChevronDown size={16} />
-                </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
                 {isConnected ? (
-                    <div className="bg-emerald-500/20 text-emerald-400 text-xs px-3 py-1.5 rounded-full flex items-center gap-2">
-                        <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        LIVE
+                    <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-bold px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm shadow-emerald-50">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                        CONNECTED
                     </div>
                 ) : (
-                    <div className="bg-amber-500/20 text-amber-400 text-xs px-3 py-1.5 rounded-full flex items-center gap-2">
-                        <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
-                        CONNECTING
+                    <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm shadow-rose-50">
+                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
+                        DISCONNECTED
                     </div>
                 )}
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4 pl-6 border-l border-slate-200">
                     <div className="text-right">
-                        <p className="text-sm font-medium">Syam</p>
-                        <p className="text-xs text-gray-500">Platform Engineer</p>
+                        <p className="text-sm font-bold text-slate-800">Syamjith</p>
+                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Admin Account</p>
                     </div>
-                    <div className="w-9 h-9 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-full flex items-center justify-center">
-                        <User size={18} />
+                    <div className="w-11 h-11 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border-2 border-white">
+                        <User size={20} className="text-white" />
                     </div>
                 </div>
             </div>

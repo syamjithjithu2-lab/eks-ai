@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import io from 'socket.io-client';
+import { Activity } from 'lucide-react';
 
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -14,6 +15,7 @@ import ObservabilityPage from './components/ObservabilityPage';
 import CostPage from './components/CostPage';
 import IncidentList from './components/IncidentList';
 import IncidentAnalysis from './components/IncidentAnalysis';
+import PRHub from './components/PRHub';
 
 
 
@@ -35,6 +37,9 @@ export default function App() {
         const socket = io('http://localhost:3001', { reconnection: true, reconnectionDelay: 1000 });
         socketRef.current = socket;
 
+        const handleNav = (e) => setActivePage(e.detail);
+        window.addEventListener('nav-change', handleNav);
+
         socket.on('connect', () => setIsConnected(true));
         socket.on('disconnect', () => setIsConnected(false));
 
@@ -55,49 +60,68 @@ export default function App() {
         return () => { socket.removeAllListeners(); socket.disconnect(); };
     }, []);
 
-    // Compute the filtered data slice based on selections
-    let filteredClusters = clusters;
-    if (selectedCluster) {
-        filteredClusters = clusters.filter(c => c.id === selectedCluster.id);
-        if (selectedNamespace) {
-            filteredClusters = filteredClusters.map(c => ({
-                ...c,
-                namespaces: c.namespaces.filter(ns => ns.name === selectedNamespace.name)
-            }));
-            if (selectedPod) {
-                filteredClusters = filteredClusters.map(c => ({
+    // Memoized filtered data to prevent unnecessary re-renders on socket updates
+    const filteredClusters = useMemo(() => {
+        let result = clusters;
+        if (selectedCluster) {
+            result = clusters.filter(c => c.id === selectedCluster.id);
+            if (selectedNamespace) {
+                result = result.map(c => ({
                     ...c,
-                    namespaces: c.namespaces.map(ns => ({
-                        ...ns,
-                        pods: ns.pods.filter(p => p.id === selectedPod.id)
-                    }))
+                    namespaces: c.namespaces.filter(ns => ns.name === selectedNamespace.name)
                 }));
+                if (selectedPod) {
+                    result = result.map(c => ({
+                        ...c,
+                        namespaces: c.namespaces.map(ns => ({
+                            ...ns,
+                            pods: ns.pods.filter(p => p.id === selectedPod.id)
+                        }))
+                    }));
+                }
             }
         }
-    }
+        return result;
+    }, [clusters, selectedCluster, selectedNamespace, selectedPod]);
 
     const renderPage = () => {
         switch (activePage) {
             case 'overview':
                 return (
-                    <>
-                        <SummaryCards />
-                        <div className="p-6 space-y-8">
-                            <MetricsBar 
-                                filteredClusters={filteredClusters} 
+                    <div className="p-8 grid grid-cols-12 gap-8 auto-rows-max">
+                        {/* Metrics Column conceptually split */}
+                        <div className="col-span-12">
+                            <SummaryCards />
+                        </div>
+
+                        <div className="col-span-12">
+                            <MetricsBar
+                                filteredClusters={filteredClusters}
                                 selectedCluster={selectedCluster}
                                 selectedNamespace={selectedNamespace}
                                 selectedPod={selectedPod}
                             />
-                            <OptimizationTimeline prs={prs} />
+                        </div>
 
-                            {/* Clean message instead of incidents on overview */}
-                            <div className="bg-white/5 rounded-3xl p-10 text-center">
-                                <p className="text-2xl text-gray-400">Monitor your Kubernetes clusters in real-time</p>
-                                <p className="text-gray-500 mt-3">Go to <span className="text-cyan-400">Incidents</span> tab for live issues and auto-remediation</p>
+                        <div className="col-span-8">
+                            <OptimizationTimeline prs={prs} />
+                        </div>
+
+                        <div className="col-span-4 flex">
+                            <div className="glass-card rounded-[2.5rem] p-10 text-center border-white/40 flex flex-col justify-center items-center w-full">
+                                <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 border border-indigo-100">
+                                    <Activity className="text-indigo-600" size={32} />
+                                </div>
+                                <p className="text-2xl font-black text-slate-800 tracking-tight leading-tight">Cluster Intel</p>
+                                <p className="text-slate-500 mt-4 text-sm font-medium">Monitoring your pods in real-time. Check <span className="text-indigo-600 font-bold">Incidents</span> for auto-remediation.</p>
+                                <div onClick={() => window.dispatchEvent(new CustomEvent('nav-change', { detail: 'prs' }))}
+                                    className="mt-8 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-xs shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all cursor-pointer"
+                                >
+                                    View Full Analytics
+                                </div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 );
 
             case 'incidents':
@@ -122,13 +146,21 @@ export default function App() {
                 );
 
             case 'agents':
-                return <AgentsPage />;
+                return <AgentsPage clusters={clusters} incidents={incidents} prs={prs} />;
             case 'security':
                 return <SecurityPage />;
             case 'observability':
-                return <ObservabilityPage />;
+                return <ObservabilityPage
+                    logStream={logStream}
+                    clusters={clusters}
+                    selectedCluster={selectedCluster}
+                    selectedNamespace={selectedNamespace}
+                    selectedPod={selectedPod}
+                />;
             case 'cost':
                 return <CostPage prs={prs} />;
+            case 'prs':
+                return <PRHub prs={prs} />;
 
             default:
                 return <div className="p-12 text-center text-gray-400">Page Coming Soon...</div>;
@@ -136,10 +168,11 @@ export default function App() {
     };
 
     return (
-        <div className="flex h-screen bg-[#0a0a0a] text-white overflow-hidden">
-            <Sidebar 
-                activePage={activePage} 
-                setActivePage={setActivePage} 
+        <div className="flex h-screen text-slate-900 overflow-hidden relative">
+            <div className="light-mesh" />
+            <Sidebar
+                activePage={activePage}
+                setActivePage={setActivePage}
                 filteredClusters={filteredClusters}
                 selectedCluster={selectedCluster}
                 selectedNamespace={selectedNamespace}
@@ -159,7 +192,7 @@ export default function App() {
                     isConnected={isConnected}
                 />
 
-                <div className="flex-1 overflow-auto bg-[#0a0a0a]">
+                <div className="flex-1 overflow-auto">
                     {renderPage()}
                 </div>
             </div>
