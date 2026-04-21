@@ -232,10 +232,44 @@ app.get('/logs/:podId', (req, res) => {
 });
 
 app.post('/chat', (req, res) => {
-  res.json({
-    answer: "Root cause: OOMKilled due to memory pressure. Suggested fix: Increase memory limit to 1Gi and add HPA.",
-    suggestions: ["Increase memory limit", "Add HorizontalPodAutoscaler", "Enable cluster autoscaling"]
-  });
+  const { logs = [], incident = {} } = req.body;
+
+  const allLogs = logs.join('\n');
+  const hasCrash   = allLogs.includes('CrashLoop') || allLogs.includes('crash');
+  const hasOOM     = allLogs.includes('OOMKilled') || allLogs.includes('memory limit');
+  const hasConn    = allLogs.includes('ECONNREFUSED') || allLogs.includes('unreachable') || allLogs.includes('timeout');
+  const hasEvict   = allLogs.includes('evicted') || allLogs.includes('memory pressure');
+  const hasAuth    = allLogs.includes('Permission denied') || allLogs.includes('Authentication');
+  const hasIO      = allLogs.includes('I/O error') || allLogs.includes('data corruption');
+
+  let answer, suggestions;
+
+  if (hasOOM) {
+    answer = `Root Cause: The container was OOMKilled because memory consumption exceeded the configured limit. The pod logs confirm repeated memory spikes before termination. Increasing the memory limit and adding resource-based HPA should prevent recurrence.`;
+    suggestions = ['Increase memory limit to 1Gi or higher', 'Add HorizontalPodAutoscaler with memory metric', 'Enable cluster-level memory autoscaling', 'Review application for memory leaks'];
+  } else if (hasCrash) {
+    answer = `Root Cause: The container is in a CrashLoopBackOff state, indicating the application fails to start or crashes shortly after startup. This is often caused by misconfigured environment variables, missing secrets, or startup command errors.`;
+    suggestions = ['Check container startup command and args', 'Verify all required environment variables and secrets are mounted', 'Increase initialDelaySeconds on liveness probe', 'Review container exit code for clues'];
+  } else if (hasConn) {
+    answer = `Root Cause: The pod cannot reach one or more upstream services (ECONNREFUSED / timeout). This is typically caused by a downstream service being down, network policy blocking traffic, or a DNS resolution failure.`;
+    suggestions = ['Verify upstream service is running and healthy', 'Check NetworkPolicy objects for traffic rules', 'Test DNS resolution from within the pod', 'Confirm service endpoint is correctly bound'];
+  } else if (hasEvict) {
+    answer = `Root Cause: The node is under memory pressure which caused Kubernetes to evict this pod. The node does not have sufficient free memory to run all scheduled workloads, leading to a forced eviction of lower-priority pods.`;
+    suggestions = ['Add resource requests/limits to all pods on the node', 'Scale out the node group or add more nodes', 'Set PriorityClass to protect critical pods from eviction', 'Review DaemonSets consuming excess node memory'];
+  } else if (hasAuth) {
+    answer = `Root Cause: The pod is failing due to missing or incorrect access permissions. It cannot read a required Kubernetes Secret or ConfigMap, likely due to an improperly configured RBAC role or ServiceAccount.`;
+    suggestions = ['Verify the pod ServiceAccount has the correct RBAC bindings', 'Check that the Secret/ConfigMap exists in the correct namespace', 'Review audit logs for denied access events', 'Use `kubectl auth can-i` to test permissions'];
+  } else if (hasIO) {
+    answer = `Root Cause: Disk I/O errors indicate possible data corruption or a failing underlying storage volume. This may be caused by a full PVC, an unhealthy EBS/persistent disk, or filesystem permission issues.`;
+    suggestions = ['Check PVC usage with `kubectl describe pvc`', 'Inspect node disk health via cloud provider console', 'Consider migrating data to a new volume and deleting the corrupted one', 'Enable volume snapshot backups'];
+  } else {
+    answer = `Root Cause: Analysis of the provided logs indicates general instability in the pod. No specific critical pattern (OOM, crash, connection refusal) was identified in the submitted logs. Submitting a more targeted set of ERROR/CRITICAL logs may yield a more precise diagnosis.`;
+    suggestions = ['Filter logs to only ERROR and CRITICAL entries', 'Check recent deployments for configuration changes', 'Review resource quotas and limits', 'Inspect recent Kubernetes events with `kubectl describe pod`'];
+  }
+
+  setTimeout(() => {
+    res.json({ answer, suggestions });
+  }, 800); // Simulate AI thinking delay
 });
 
 // ─── Socket connection ────────────────────────────────────────────────────────
