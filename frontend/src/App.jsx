@@ -88,7 +88,7 @@ export default function App() {
         switch (activePage) {
             case 'overview':
                 return (
-                    <div className="p-8 grid grid-cols-12 gap-8 auto-rows-max">
+                    <div className="p-4 md:p-6 lg:p-8 grid grid-cols-12 gap-4 md:gap-6 lg:gap-8 auto-rows-max">
                         {/* Metrics Column conceptually split */}
                         <div className="col-span-12">
                             <SummaryCards />
@@ -107,8 +107,8 @@ export default function App() {
                             <OptimizationTimeline prs={prs} />
                         </div>
 
-                        <div className="col-span-4 flex">
-                            <div className="glass-card rounded-[2.5rem] p-10 text-center border-white/40 flex flex-col justify-center items-center w-full">
+                        <div className="col-span-12 lg:col-span-4 flex">
+                            <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-6 lg:p-10 text-center border-white/40 flex flex-col justify-center items-center w-full">
                                 <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 border border-indigo-100">
                                     <Activity className="text-indigo-600" size={32} />
                                 </div>
@@ -126,8 +126,8 @@ export default function App() {
 
             case 'incidents':
                 return (
-                    <div className="p-8">
-                        <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
+                    <div className="p-4 md:p-6 lg:p-8">
+                        <h1 className="text-2xl lg:text-3xl font-bold mb-8 flex items-center gap-3">
                             All Incidents
                             <span className="text-red-500 text-sm bg-red-500/20 px-3 py-1 rounded-full">LIVE</span>
                         </h1>

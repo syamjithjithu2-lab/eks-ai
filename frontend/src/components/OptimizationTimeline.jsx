@@ -2,15 +2,15 @@ import { Clock, GitPullRequest, ChevronRight, CheckCircle2 } from 'lucide-react'
 
 export default function OptimizationTimeline({ prs }) {
     return (
-        <div className="glass-card rounded-[3rem] p-10 h-full">
+        <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-10 h-full">
             <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100">
                         <Clock size={24} className="text-white" />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-slate-800 tracking-tight leading-none">Optimization Timeline</h3>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1.5 flex items-center gap-2">
+                        <h3 className="text-xl lg:text-2xl font-black text-slate-800 tracking-tight leading-none">Optimization Timeline</h3>
+                        <p className="text-[9px] lg:text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1.5 flex items-center gap-2">
                              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping"></span>
                              Real-time Analysis active
                         </p>

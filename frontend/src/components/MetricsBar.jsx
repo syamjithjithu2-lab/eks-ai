@@ -52,17 +52,17 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
     return (
         <div className="grid grid-cols-12 grid-responsive-3 gap-8">
             {/* Avg CPU Usage */}
-            <div className="col-span-4 glass-card rounded-[3rem] p-10 group luminous-card flex flex-col justify-between">
+            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group luminous-card flex flex-col justify-between">
                 <div className="flex justify-between items-start mb-6">
                     <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100 group-hover:scale-110 transition-transform">
                         <Cpu className="text-indigo-600" size={24} />
                     </div>
                 </div>
                 <div>
-                    <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "CPU USAGE" : "AVG CPU USAGE"}</p>
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "CPU USAGE" : "AVG CPU USAGE"}</p>
                     <div className="flex items-baseline gap-2">
-                        <p className="text-8xl font-black text-slate-800 tracking-tighter leading-none">{avgCpu}</p>
-                        <p className="text-2xl font-bold text-slate-400 font-tech">%</p>
+                        <p className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black text-slate-800 tracking-tighter leading-none">{avgCpu}</p>
+                        <p className="text-lg lg:text-2xl font-bold text-slate-400 font-tech">%</p>
                     </div>
                 </div>
                 <div className="mt-10 h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
@@ -74,17 +74,17 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             </div>
 
             {/* Memory Pressure */}
-            <div className="col-span-4 glass-card rounded-[3rem] p-10 group luminous-card flex flex-col justify-between">
+            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group luminous-card flex flex-col justify-between">
                 <div className="flex justify-between items-start mb-6">
                     <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center border border-rose-100 group-hover:scale-110 transition-transform">
                         <Database className="text-rose-500" size={24} />
                     </div>
                 </div>
                 <div>
-                    <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "RAM PRESSURE" : "AVG RAM PRESSURE"}</p>
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-2">{selectedPod ? "RAM PRESSURE" : "AVG RAM PRESSURE"}</p>
                     <div className="flex items-baseline gap-2">
-                        <p className="text-8xl font-black text-slate-800 tracking-tighter leading-none">{memoryPressure}</p>
-                        <p className="text-2xl font-bold text-slate-400 font-tech">%</p>
+                        <p className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black text-slate-800 tracking-tighter leading-none">{memoryPressure}</p>
+                        <p className="text-lg lg:text-2xl font-bold text-slate-400 font-tech">%</p>
                     </div>
                 </div>
                 <div className="mt-10 h-3 bg-slate-50 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
@@ -96,7 +96,7 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             </div>
 
             {/* Chart Overview */}
-            <div className="col-span-4 glass-card rounded-[3rem] p-10 group flex flex-col">
+            <div className="col-span-4 glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 xl:p-10 group flex flex-col">
                 <div className="flex justify-between items-start mb-8">
                     <div>
                         <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em] mb-1">{chartTitle}</p>

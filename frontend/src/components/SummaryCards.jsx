@@ -12,15 +12,15 @@ export default function SummaryCards() {
     return (
         <div className="grid grid-cols-5 grid-responsive-5 gap-6">
             {CARD_DATA.map((card, i) => (
-                <div key={i} className="glass-card rounded-[2.5rem] p-8 group luminous-card">
-                    <div className="flex justify-between items-start mb-6">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-${card.color}-50 border border-${card.color}-100 group-hover:scale-110 transition-transform shadow-sm shadow-${card.color}-50`}>
-                            <card.icon className={`text-${card.color}-500`} size={24} />
+                <div key={i} className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-5 md:p-8 group luminous-card">
+                    <div className="flex justify-between items-start mb-4 md:mb-6">
+                        <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center bg-${card.color}-50 border border-${card.color}-100 group-hover:scale-110 transition-transform shadow-sm shadow-${card.color}-50`}>
+                            <card.icon className={`text-${card.color}-500`} size={20} />
                         </div>
                         <div className={`w-2 h-2 rounded-full bg-${card.color}-500 animate-pulse mt-2`}></div>
                     </div>
-                    <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] mb-2">{card.title}</p>
-                    <p className="text-5xl font-black text-slate-800 tracking-tighter group-hover:translate-x-2 transition-transform duration-500">{card.value}</p>
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-700 uppercase tracking-[0.2em] mb-1 md:mb-2">{card.title}</p>
+                    <p className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter group-hover:translate-x-2 transition-transform duration-500">{card.value}</p>
                     <div className="mt-6">
                         <span className={`text-[10px] font-black px-4 py-1.5 rounded-xl bg-${card.color}-50 text-${card.color}-600 border border-${card.color}-100/50 uppercase tracking-widest`}>
                             {card.status}

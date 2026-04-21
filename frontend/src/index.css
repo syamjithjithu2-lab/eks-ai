@@ -30,8 +30,8 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03; /* Slightly lower opacity */
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: overlay;
@@ -58,8 +58,8 @@ body::before {
         radial-gradient(at 100% 100%, hsla(273,43%,30%,1) 0, transparent 50%);
     background-blend-mode: overlay;
     opacity: 0.15; 
-    filter: blur(120px);
-    animation: mesh-move 12s linear infinite alternate;
+    filter: blur(80px); /* Reduced from 120px for better performance */
+    animation: mesh-move 20s linear infinite alternate; /* Slower animation for less CPU usage */
     will-change: transform;
 }
 
@@ -79,9 +79,9 @@ body::before {
         radial-gradient(at 31% 83%, hsla(339,100%,94%,1) 0, transparent 50%), 
         radial-gradient(at 73% 71%, hsla(217,100%,94%,1) 0, transparent 50%), 
         radial-gradient(at 15% 42%, hsla(271,100%,94%,1) 0, transparent 50%);
-    filter: blur(70px);
-    opacity: 0.65; /* Lower opacity for more vivid colors underneath */
-    animation: mesh-move 15s ease-in-out infinite alternate;
+    filter: blur(50px); /* Reduced from 70px */
+    opacity: 0.5; /* Lower opacity */
+    animation: mesh-move 25s ease-in-out infinite alternate;
     will-change: transform;
 }
 
@@ -92,8 +92,8 @@ body::before {
 
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(25px) saturate(200%);
-    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    backdrop-filter: blur(12px) saturate(200%); /* Reduced from 25px for significant performance gain */
+    -webkit-backdrop-filter: blur(12px) saturate(200%);
     border: 1px solid var(--glass-border);
     box-shadow: 
         0 10px 15px -3px rgba(0, 0, 0, 0.05),
@@ -133,9 +133,9 @@ body::before {
 }
 
 .glass-header {
-    background: rgba(255, 255, 255, 0.85); /* More solid */
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.8); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -192,6 +192,16 @@ h1, h2, h3 {
     .grid-responsive-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .grid-responsive-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
     .grid-responsive-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+    
+    /* Global scaling for smaller screens */
+    :root {
+        --sidebar-width: 240px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .grid-responsive-5 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .grid-responsive-4 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
 }
 
 @media (max-height: 800px) {
