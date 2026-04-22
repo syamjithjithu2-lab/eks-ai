@@ -40,15 +40,15 @@ export default function CustomDropdown({
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-3 bg-white/60 hover:bg-white/90 rounded-2xl px-4 py-2.5 border border-slate-200/60 cursor-pointer transition-all duration-300 shadow-sm group select-none"
             >
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">{label}</span>
-                <span className="text-sm font-bold text-slate-800 truncate leading-none min-w-[100px]">
+                <span className="text-[0.625rem] font-black text-slate-500 uppercase tracking-widest leading-none">{label}</span>
+                <span className="text-sm font-bold text-slate-800 truncate leading-none min-w-[6.25rem]">
                     {activeItem ? activeItem.label : placeholder}
                 </span>
                 <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </div>
 
             {isOpen && (
-                <div className="absolute top-full left-0 mt-2 w-full min-w-[220px] glass-card rounded-2xl shadow-2xl p-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-200 border-white/60 bg-white/90">
+                <div className="absolute top-full left-0 mt-2 w-full min-w-[13.75rem] glass-card rounded-2xl shadow-2xl p-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-200 border-white/60 bg-white/90">
                     <div className="flex items-center gap-2 px-3 py-2 bg-slate-50/50 rounded-xl mb-2 border border-slate-100 shadow-inner">
                         <Search size={14} className="text-slate-400" />
                         <input 
@@ -61,9 +61,9 @@ export default function CustomDropdown({
                         />
                     </div>
 
-                    <div className="max-h-[240px] overflow-auto custom-scrollbar space-y-1">
+                    <div className="max-h-[15rem] overflow-auto custom-scrollbar space-y-1">
                         {filteredOptions.length === 0 ? (
-                            <div className="px-4 py-3 text-[10px] font-bold text-slate-400 uppercase text-center tracking-widest italic">
+                            <div className="px-4 py-3 text-[0.625rem] font-bold text-slate-400 uppercase text-center tracking-widest italic">
                                 No matches found
                             </div>
                         ) : (

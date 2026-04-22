@@ -70,21 +70,21 @@ export default function Header({
                                 if (pod) setSelectedPod(pod);
                             }
                         }}
-                        className="min-w-[140px] md:min-w-[180px]"
+                        className="min-w-[8.75rem] md:min-w-[11.25rem]"
                     />
                 )}
             </div>
 
             <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
                 {isConnected ? (
-                    <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[9px] md:text-[10px] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+                    <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[0.5625rem] md:text-[0.625rem] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-emerald-500/40 shadow-lg"></div>
                         <span className="hidden sm:inline">CONNECTED</span>
                         <span className="sm:hidden">OK</span>
                     </div>
                 ) : (
-                    <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[9px] md:text-[10px] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
-                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
+                    <div className="bg-rose-50 border border-rose-100 text-rose-600 text-[0.5625rem] md:text-[0.625rem] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
+                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-rose-500/40 shadow-lg"></div>
                         <span className="hidden sm:inline">DISCONNECTED</span>
                         <span className="sm:hidden">OFF</span>
                     </div>
@@ -93,7 +93,7 @@ export default function Header({
                 <div className="flex items-center gap-2 md:gap-4 pl-3 md:pl-6 border-l border-slate-200">
                     <div className="text-right hidden sm:block">
                         <p className="text-xs md:text-sm font-bold text-slate-800">Syamjith</p>
-                        <p className="text-[9px] md:text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Admin Account</p>
+                        <p className="text-[0.5625rem] md:text-[0.625rem] font-bold text-indigo-500 uppercase tracking-wider">Admin Account</p>
                     </div>
                     <div className="w-8 h-8 md:w-11 md:h-11 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 border-2 border-white">
                         <User size={16} className="text-white md:hidden" />

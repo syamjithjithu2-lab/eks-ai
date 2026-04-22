@@ -35,9 +35,9 @@ export default function CostPage({ prs }) {
                             <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center border border-emerald-100 shadow-sm">
                                 <TrendingDown className="text-emerald-500" size={24} />
                             </div>
-                            <h2 className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Projected Monthly Savings</h2>
+                            <h2 className="text-[0.625rem] font-black text-emerald-600 uppercase tracking-[0.2em]">Projected Monthly Savings</h2>
                         </div>
-                        <p className="text-8xl font-black text-slate-800 tracking-tighter">$2,384</p>
+                        <p className="text-[5rem] font-black text-slate-800 tracking-tighter">$2,384</p>
                         <p className="text-slate-700 font-bold mt-4 flex items-center gap-2">
                             <ArrowUpRight className="text-emerald-500" size={20} />
                             +12.4% INCREASE FROM LAST MONTH
@@ -49,19 +49,19 @@ export default function CostPage({ prs }) {
                          <div className="space-y-6">
                             {prs.length > 0 ? (
                                 prs.map((pr, i) => (
-                                    <div key={i} className="bg-white/80 border border-slate-300 p-6 rounded-[2rem] flex items-center justify-between group hover:bg-white transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-indigo-50/50">
+                                    <div key={i} className="bg-white/80 border border-slate-300 p-6 rounded-[2rem] flex items-center justify-between group hover:bg-white transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-indigo-50/50">
                                         <div className="flex items-center gap-5">
                                             <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100">
                                                 <Target className="text-indigo-600" size={24} />
                                             </div>
                                             <div>
-                                                <p className="font-bold text-slate-800 leading-none mb-2">{pr.title}</p>
-                                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{pr.cluster}</p>
+                                                <p className="font-bold text-slate-800 leading-none mb-2 text-[0.875rem]">{pr.title}</p>
+                                                <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest">{pr.cluster}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-lg font-black text-emerald-600">{pr.savings}</p>
-                                            <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-1">Pending PR</p>
+                                            <p className="text-[0.625rem] font-bold text-slate-700 uppercase tracking-widest mt-1">Pending PR</p>
                                         </div>
                                     </div>
                                 ))
@@ -83,11 +83,11 @@ export default function CostPage({ prs }) {
                              <h3 className="text-lg font-black text-white tracking-tight leading-none">Total Efficiency Score</h3>
                         </div>
                         <div className="flex items-baseline gap-2">
-                             <p className="text-8xl font-black text-white tracking-tighter">94</p>
-                             <p className="text-3xl font-bold text-indigo-100">/ 100</p>
+                             <p className="text-[5rem] font-black text-white tracking-tighter leading-none">94</p>
+                             <p className="text-[1.875rem] font-bold text-indigo-100">/ 100</p>
                         </div>
                         <div className="mt-10 h-3 bg-white/10 rounded-full overflow-hidden border border-white/10">
-                            <div className="h-full bg-white transition-all duration-1000 shadow-[0_0_20px_rgba(255,255,255,0.4)]" style={{ width: '94%' }}></div>
+                            <div className="h-full bg-white transition-all duration-1000 shadow-lg" style={{ width: '94%' }}></div>
                         </div>
                     </div>
 
@@ -98,7 +98,7 @@ export default function CostPage({ prs }) {
                                 <div key={i} className="flex justify-between items-center bg-white/80 p-4 rounded-2xl border border-slate-200">
                                     <div>
                                         <p className="text-sm font-bold text-slate-800">{s.category}</p>
-                                        <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${s.potential === 'Critical' ? 'text-rose-600 font-bold' : 'text-slate-700'}`}>Potential: {s.potential}</p>
+                                        <p className={`text-[0.625rem] font-black uppercase tracking-widest mt-1 ${s.potential === 'Critical' ? 'text-rose-600 font-bold' : 'text-slate-700'}`}>Potential: {s.potential}</p>
                                     </div>
                                     <p className="text-xl font-black text-slate-800">{s.amount}</p>
                                 </div>

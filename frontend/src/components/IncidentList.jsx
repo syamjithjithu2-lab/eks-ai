@@ -11,11 +11,11 @@ export default function IncidentList({ incidents, onSelect }) {
                 <h3 className="text-sm sm:text-base font-black text-slate-800 tracking-tight flex items-center gap-2">
                     Active Incidents
                     <div className="flex items-center gap-1 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
-                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-[0_0_6px_rgba(244,63,94,0.6)]"></div>
-                        <span className="text-[9px] font-black text-rose-600 uppercase tracking-wider">Live</span>
+                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-rose-500/40 shadow-lg"></div>
+                        <span className="text-[0.5625rem] font-black text-rose-600 uppercase tracking-wider">Live</span>
                     </div>
                 </h3>
-                <span className="text-[9px] sm:text-[10px] font-black text-slate-700 uppercase tracking-widest bg-slate-100/80 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl border border-slate-200">
+                <span className="text-[0.5625rem] sm:text-[0.625rem] font-black text-slate-700 uppercase tracking-widest bg-slate-100/80 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl border border-slate-200">
                     {incidents.length} total
                 </span>
             </div>
@@ -27,7 +27,7 @@ export default function IncidentList({ incidents, onSelect }) {
                             <span className="text-2xl sm:text-3xl">🛡️</span>
                         </div>
                         <p className="font-bold text-slate-800 text-sm">Clear Skies</p>
-                        <p className="text-xs text-slate-600 mt-1 max-w-[180px]">No incidents detected. System is running optimally.</p>
+                        <p className="text-xs text-slate-600 mt-1 max-w-[11.25rem]">No incidents detected. System is running optimally.</p>
                     </div>
                 ) : (
                     incidents.slice(0, 50).map((inc, i) => (
@@ -38,19 +38,19 @@ export default function IncidentList({ incidents, onSelect }) {
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="font-black text-slate-800 truncate leading-none mb-1 text-xs sm:text-sm group-hover:text-indigo-600 transition-colors">{inc.pod}</p>
-                                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{inc.cluster} · {inc.namespace}</p>
+                                <p className="text-[0.5625rem] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{inc.cluster} · {inc.namespace}</p>
                                 {inc.triggerLog && (
-                                    <div className="bg-slate-50/80 rounded-lg p-1.5 sm:p-2 border border-slate-100 font-mono text-[9px] sm:text-[10px] text-slate-500 truncate group-hover:bg-white transition-colors">
+                                    <div className="bg-slate-50/80 rounded-lg p-1.5 sm:p-2 border border-slate-100 font-mono text-[0.5625rem] sm:text-[0.625rem] text-slate-500 truncate group-hover:bg-white transition-colors">
                                         <span className="text-rose-400 font-bold mr-1.5">LOG</span>
                                         {inc.triggerLog.replace(/^.*\[\w+\]\s\S+:\s/, '').substring(0, 55)}…
                                     </div>
                                 )}
                             </div>
                             <div className="text-right flex-shrink-0">
-                                <span className={`px-2 py-0.5 text-[9px] font-black rounded-md border shadow-sm ${SEVERITY_STYLES[inc.severity] || SEVERITY_STYLES.Critical} uppercase tracking-wide`}>
+                                <span className={`px-2 py-0.5 text-[0.5625rem] font-black rounded-md border shadow-sm ${SEVERITY_STYLES[inc.severity] || SEVERITY_STYLES.Critical} uppercase tracking-wide`}>
                                     {inc.severity}
                                 </span>
-                                <p className="text-[9px] font-bold text-slate-500 mt-1.5">{new Date(inc.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
+                                <p className="text-[0.5625rem] font-bold text-slate-500 mt-1.5">{new Date(inc.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
                             </div>
                         </div>
                     ))

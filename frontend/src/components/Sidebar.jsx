@@ -43,19 +43,19 @@ export default function Sidebar({ activePage, setActivePage, filteredClusters, s
     }
 
     return (
-        <div className="w-80 glass-sidebar p-8 sidebar-compact-padding flex flex-col z-50">
+        <aside className="w-[clamp(14rem,18vw,20rem)] flex-shrink-0 glass-sidebar flex flex-col z-10 box-border p-8 sidebar-compact-padding">
             <div className="flex items-center gap-4 mb-16 sidebar-compact-mb px-2">
                 <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-100 ring-4 ring-white">
                     <Command className="text-white" size={28} />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-black tracking-tighter text-slate-800 leading-none">EKS.AI</h1>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mt-1">Platform Core</p>
+                    <h2 className="text-[1.125rem] font-black text-slate-800 tracking-tighter leading-none">EKS AI</h2>
+                    <p className="text-[0.625rem] font-black text-slate-600 uppercase tracking-[0.2em] mt-1">Platform Core</p>
                 </div>
             </div>
 
             <nav className="space-y-3 flex-1 px-1 overflow-y-auto custom-scrollbar pr-2 h-0 min-h-0">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 px-3">Command Center</p>
+                <p className="text-[0.625rem] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 px-3">Command Center</p>
                 {menuItems.map((item) => (
                     <div
                         key={item.id}
@@ -71,10 +71,10 @@ export default function Sidebar({ activePage, setActivePage, filteredClusters, s
                         <item.icon size={20} className={activePage === item.id ? 'text-white' : 'group-hover:scale-125 transition-transform duration-500'} />
                         <span className="font-black text-sm tracking-tight">{item.label}</span>
                         {item.id === 'incidents' && (
-                            <span className={`ml-auto text-[8px] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-rose-500 text-white shadow-lg shadow-rose-100'}`}>LIVE</span>
+                            <span className={`ml-auto text-[0.5rem] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-rose-500 text-white shadow-lg shadow-rose-100'}`}>LIVE</span>
                         )}
                         {item.id === 'prs' && (
-                             <span className={`ml-auto text-[8px] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-emerald-500 text-white shadow-lg shadow-emerald-100'}`}>NEW</span>
+                             <span className={`ml-auto text-[0.5rem] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-emerald-500 text-white shadow-lg shadow-emerald-100'}`}>NEW</span>
                         )}
                     </div>
                 ))}
@@ -89,20 +89,20 @@ export default function Sidebar({ activePage, setActivePage, filteredClusters, s
                         <div className={`w-3 h-3 rounded-full relative ${statusColor.includes('rose') ? 'bg-rose-500' : statusColor.includes('amber') ? 'bg-amber-500' : 'bg-emerald-500'}`}>
                             <div className={`absolute inset-0 rounded-full animate-ping opacity-40 ${statusColor.includes('rose') ? 'bg-rose-500' : statusColor.includes('amber') ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
                         </div>
-                        <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${statusColor}`}>{titleText}</p>
+                        <p className={`text-[0.625rem] font-black uppercase tracking-[0.2em] ${statusColor}`}>{titleText}</p>
                     </div>
                     <p className="text-slate-800 font-black tracking-tight text-sm mb-1">{subTitle}</p>
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Global Status</p>
+                    <p className="text-slate-500 text-[0.625rem] font-bold uppercase tracking-widest">Global Status</p>
                 </div>
 
-                <div className="flex items-center justify-between px-4 opacity-50">
-                    <p className="text-[10px] font-black text-slate-500 tracking-widest uppercase">V2.4.0 CLOUD</p>
+                <div className="flex items-center justify-between p-6 border-t border-slate-100">
+                    <p className="text-[0.625rem] font-black text-slate-500 tracking-widest uppercase">V2.4.0 CLOUD</p>
                     <div className="flex gap-2">
                         <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
                         <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     );
 }

@@ -109,20 +109,20 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
                             <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100 group-hover:scale-110 transition-transform">
                                 <Users className="text-indigo-600" size={28} />
                             </div>
-                            <span className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-wider ${agent.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
+                            <span className={`px-3 py-1 text-[0.625rem] font-black rounded-full uppercase tracking-wider ${agent.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
                                 {agent.status}
                             </span>
                         </div>
                         <h3 className="text-xl font-black text-slate-800 tracking-tight">{agent.name}</h3>
-                        <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">Edge Compute Unit</p>
+                        <p className="text-[0.625rem] font-bold text-slate-600 uppercase tracking-widest mt-1">Edge Compute Unit</p>
                         
                         <div className="grid grid-cols-2 gap-4 mt-8">
                             <div className="bg-white/80 p-4 rounded-2xl border border-slate-200 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">Latency</p>
+                                <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest mb-1">Latency</p>
                                 <p className="text-2xl font-black text-slate-800">{agent.latency}</p>
                             </div>
                             <div className="bg-white/80 p-4 rounded-2xl border border-slate-200 shadow-sm">
-                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">Uptime</p>
+                                <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest mb-1">Uptime</p>
                                 <p className="text-2xl font-black text-emerald-600">{agent.uptime}</p>
                             </div>
                         </div>
@@ -130,7 +130,7 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
                 ))}
             </div>
 
-            <div className="flex gap-8 min-h-[600px]">
+            <div className="flex gap-8 min-h-[37.5rem]">
                 {/* AI Assistant Chat Panel */}
                 <div className="flex-1 glass-card rounded-[3rem] p-8 flex flex-col relative overflow-hidden bg-white/60">
                     <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
@@ -145,7 +145,7 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
                             <h3 className="text-xl font-black text-slate-800 tracking-tight">AI Cluster Assistant</h3>
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Always Ready</p>
+                                <p className="text-[0.625rem] font-black text-emerald-600 uppercase tracking-widest">Always Ready</p>
                             </div>
                         </div>
                     </div>
@@ -160,7 +160,7 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
                                     <p className={`text-sm ${msg.role === 'user' ? 'font-bold' : 'font-medium'} leading-relaxed`}>
                                         {msg.text}
                                     </p>
-                                    <p className={`text-[8px] font-black uppercase mt-2 opacity-40 ${msg.role === 'user' ? 'text-white text-right' : 'text-slate-400'}`}>{msg.timestamp}</p>
+                                    <p className={`text-[0.5rem] font-black uppercase mt-2 opacity-40 ${msg.role === 'user' ? 'text-white text-right' : 'text-slate-400'}`}>{msg.timestamp}</p>
                                 </div>
                              </div>
                          ))}
@@ -198,27 +198,27 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
                     </div>
                 </div>
 
-                <div className="w-80 space-y-6">
+                <div className="w-[clamp(16rem,20vw,22rem)] space-y-6">
                     <div className="glass-card rounded-[2.5rem] p-6 bg-emerald-50/50 border-emerald-100/50">
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-4">Quick Stats</p>
+                        <p className="text-[0.625rem] font-black text-emerald-600 uppercase tracking-[0.2em] mb-4">Quick Stats</p>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center bg-white/80 p-3 rounded-2xl border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-widest">Active Tasks</span>
+                                <span className="text-[0.625rem] font-bold text-slate-700 uppercase tracking-widest">Active Tasks</span>
                                 <span className="font-black text-slate-800">12</span>
                             </div>
                             <div className="flex justify-between items-center bg-white/80 p-3 rounded-2xl border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-widest">Resolved</span>
+                                <span className="text-[0.625rem] font-bold text-slate-700 uppercase tracking-widest">Resolved</span>
                                 <span className="font-black text-slate-800">1.4k</span>
                             </div>
                         </div>
                     </div>
                     
                     <div className="glass-card rounded-[2.5rem] p-6">
-                        <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Security Guard</p>
+                        <p className="text-[0.625rem] font-black text-slate-600 uppercase tracking-[0.2em] mb-4">Security Guard</p>
                         <div className="flex items-center gap-4 bg-rose-50 p-4 rounded-[1.5rem] border border-rose-100">
                              <Shield className="text-rose-600" size={24} />
                              <div>
-                                <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest">Scan Active</p>
+                                <p className="text-[0.625rem] font-black text-rose-600 uppercase tracking-widest">Scan Active</p>
                                 <p className="text-xs font-bold text-rose-500">2 events filtered</p>
                              </div>
                         </div>

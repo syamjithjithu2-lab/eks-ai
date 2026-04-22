@@ -31,21 +31,21 @@ export default function SecurityPage() {
                     <CheckCircle size={48} className="text-emerald-500" />
                 </div>
                 <h2 className="text-3xl font-black text-slate-900 tracking-tight">Infrastructure Secured</h2>
-                <p className="text-slate-600 mt-4 max-w-[500px] mx-auto text-lg font-medium leading-relaxed">
+                <p className="text-slate-600 mt-4 max-w-[31.25rem] mx-auto text-[1.125rem] font-medium leading-relaxed">
                     No critical vulnerabilities detected. All workloads are currently compliant with <span className="text-indigo-600 font-bold">CIS Kubernetes Benchmarks</span> and internal security policies.
                 </p>
                 
                 <div className="flex justify-center gap-6 mt-10">
                     <div className="bg-white border border-slate-300 py-2.5 px-5 rounded-2xl shadow-sm">
-                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-1">Vulnerabilities</p>
+                        <p className="text-[0.625rem] font-black text-slate-800 uppercase tracking-widest mb-1">Vulnerabilities</p>
                         <p className="text-2xl font-black text-slate-900">0</p>
                     </div>
                     <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-300">
-                        <p className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-1">Policy Checks</p>
+                        <p className="text-[0.625rem] font-black text-slate-800 uppercase tracking-widest mb-1">Policy Checks</p>
                         <p className="text-2xl font-black text-indigo-600">100%</p>
                     </div>
                     <div className="bg-white px-6 py-4 rounded-2xl shadow-sm border border-slate-300">
-                        <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest mb-1">Last Scan</p>
+                        <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest mb-1">Last Scan</p>
                         <p className="text-2xl font-black text-slate-800">2m ago</p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@ export default function SecurityPage() {
             <div className="flex-1 min-h-0 flex flex-col">
                 <h3 className="text-xl font-black text-slate-800 tracking-tight mb-6 flex items-center gap-3">
                     Recent Security Findings
-                    <span className="text-[10px] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase border border-indigo-100">Last 24h</span>
+                    <span className="text-[0.625rem] font-black bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full uppercase border border-indigo-100">Last 24h</span>
                 </h3>
                 <div className="grid grid-cols-3 grid-responsive-3 gap-8">
                     {findings.map((f, i) => (
@@ -63,12 +63,12 @@ export default function SecurityPage() {
                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${f.severity === 'High' ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-100'} border`}>
                                    {f.severity === 'High' ? <ShieldAlert className="text-rose-500" size={24} /> : <Lock className="text-slate-400" size={24} />}
                                 </div>
-                                <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${f.status === 'Blocked' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-500'}`}>
+                                <span className={`text-[0.625rem] font-black px-3 py-1 rounded-full uppercase tracking-wider ${f.status === 'Blocked' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-500'}`}>
                                     {f.status}
                                 </span>
                             </div>
                             <h4 className="font-black text-slate-800 leading-snug mb-2">{f.title}</h4>
-                            <p className="text-[10px] font-bold text-slate-700 uppercase tracking-widest">{f.cluster}</p>
+                            <p className="text-[0.625rem] font-bold text-slate-700 uppercase tracking-widest">{f.cluster}</p>
                         </div>
                     ))}
                 </div>

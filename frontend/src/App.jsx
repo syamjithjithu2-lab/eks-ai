@@ -118,7 +118,7 @@ export default function App() {
         switch (activePage) {
             case 'overview':
                 return (
-                    <div className="p-4 md:p-6 lg:p-8 grid grid-cols-12 gap-4 md:gap-6 lg:gap-8 auto-rows-max">
+                    <div className="p-4 md:p-6 lg:p-10 grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 auto-rows-max">
                         {/* Metrics Column conceptually split */}
                         <div className="col-span-12">
                             <SummaryCards />
@@ -133,12 +133,12 @@ export default function App() {
                             />
                         </div>
 
-                        <div className="col-span-8">
+                        <div className="col-span-12 lg:col-span-8">
                             <OptimizationTimeline prs={prs} />
                         </div>
 
                         <div className="col-span-12 lg:col-span-4 flex">
-                            <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-6 lg:p-10 text-center border-white/40 flex flex-col justify-center items-center w-full">
+                            <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-12 text-center border-white/40 flex flex-col justify-center items-center w-full">
                                 <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 border border-indigo-100">
                                     <Activity className="text-indigo-600" size={32} />
                                 </div>
@@ -156,22 +156,24 @@ export default function App() {
 
             case 'incidents':
                 return (
-                    <div className="h-full flex flex-col p-4 md:p-6 overflow-hidden">
-                        <h1 className="text-xl md:text-2xl font-bold mb-3 flex items-center gap-3 flex-shrink-0">
-                            All Incidents
-                            <span className="text-red-500 text-xs bg-red-500/20 px-3 py-1 rounded-full border border-red-500/10">LIVE</span>
+                    <div className="h-full flex flex-col p-4 md:p-6 lg:p-10 overflow-hidden">
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-800 tracking-tight mb-4 flex items-center gap-3 flex-shrink-0">
+                            Active Incidents
+                            <span className="text-rose-500 text-[0.625rem] font-black bg-rose-50 px-3 py-1 rounded-full border border-rose-100 uppercase tracking-widest">LIVE</span>
                         </h1>
-                        <div className="flex-1 flex gap-4 md:gap-6 min-h-0">
-                            <div className="w-5/12 h-full">
+                        <div className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-10 min-h-0">
+                            <div className="w-full lg:w-[40%] h-[40%] lg:h-full">
                                 <IncidentList
                                     incidents={incidents}
                                     onSelect={setSelectedIncident}
+                               Props={{ className: "h-full" }}
                                 />
                             </div>
-                            <div className="w-7/12 h-full">
+                            <div className="w-full lg:w-[60%] h-[60%] lg:h-full">
                                 <IncidentAnalysis 
                                     incident={selectedIncident} 
                                     onUpdateLogs={handleUpdateIncidentLogs}
+                                Props={{ className: "h-full" }}
                                 />
                             </div>
                         </div>

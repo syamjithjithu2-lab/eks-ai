@@ -11,18 +11,18 @@ export default function OptimizationTimeline({ prs }) {
                     </div>
                     <div>
                         <h3 className="text-base md:text-xl lg:text-2xl font-black text-slate-800 tracking-tight leading-none">Optimization Timeline</h3>
-                        <p className="text-[8px] md:text-[9px] lg:text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1.5">
+                        <p className="text-[0.5rem] md:text-[0.5625rem] lg:text-[0.625rem] font-black text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1.5">
                              <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping"></span>
                              Real-time Analysis active
                         </p>
                     </div>
                 </div>
-                <span className="text-[9px] md:text-[10px] font-black bg-slate-50 border border-slate-100 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-slate-400 uppercase tracking-widest">
+                <span className="text-[0.5625rem] md:text-[0.625rem] font-black bg-slate-50 border border-slate-100 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-slate-400 uppercase tracking-widest">
                     Last 30m
                 </span>
             </div>
 
-            <div className="space-y-2 md:space-y-4 overflow-auto pr-2 md:pr-4 custom-scrollbar" style={{ maxHeight: 'clamp(200px, 35vh, 420px)' }}>
+            <div className="space-y-2 md:space-y-4 overflow-auto pr-2 md:pr-4 custom-scrollbar" style={{ maxHeight: 'clamp(12.5rem, 35vh, 26.25rem)' }}>
                 {prs.length > 0 ? (
                     prs.map((pr, i) => (
                         <div key={i} 
@@ -36,18 +36,18 @@ export default function OptimizationTimeline({ prs }) {
                             
                             <div className="flex-1 min-w-0 flex flex-col justify-center">
                                 <div className="flex items-center gap-2 mb-1.5">
-                                    <span className="text-[8px] md:text-[9px] font-black px-2 py-0.5 bg-emerald-600 text-white rounded-md uppercase tracking-widest shadow-sm">
+                                    <span className="text-[0.5rem] md:text-[0.5625rem] font-black px-2 py-0.5 bg-emerald-600 text-white rounded-md uppercase tracking-widest shadow-sm">
                                         PR #{Math.floor(Math.random() * 900) + 100}
                                     </span>
-                                    <span className="text-[9px] md:text-[10px] font-bold text-slate-500">/ {pr.cluster}</span>
+                                    <span className="text-[0.5625rem] md:text-[0.625rem] font-bold text-slate-500">/ {pr.cluster}</span>
                                 </div>
                                 <p className="font-bold text-slate-800 text-sm md:text-lg leading-tight group-hover:text-emerald-600 transition-colors truncate">{pr.title}</p>
                             </div>
 
-                            <div className="flex flex-col items-end justify-center min-w-[70px] md:min-w-[100px]">
+                            <div className="flex flex-col items-end justify-center min-w-[4.375rem] md:min-w-[6.25rem]">
                                 <div className="flex items-center gap-1 mb-1.5">
                                     <CheckCircle2 size={10} className="text-emerald-500" />
-                                    <span className="text-[8px] md:text-[10px] font-black text-emerald-600 uppercase tracking-widest">{pr.status}</span>
+                                    <span className="text-[0.5rem] md:text-[0.625rem] font-black text-emerald-600 uppercase tracking-widest">{pr.status}</span>
                                 </div>
                                 <div className="text-base md:text-xl font-black text-slate-800">
                                     {pr.savings}
@@ -62,8 +62,8 @@ export default function OptimizationTimeline({ prs }) {
                              <GitPullRequest size={40} className="text-slate-200 hidden md:block" />
                         </div>
                         <h4 className="text-base md:text-xl font-black text-slate-800 tracking-tight">System Optimized</h4>
-                        <p className="text-slate-400 text-xs md:text-sm font-medium mt-2 max-w-[260px]">No immediate action required. Our AI agents are continuously monitoring for resource leaks.</p>
-                        <button className="mt-4 md:mt-8 text-[9px] md:text-[10px] font-black text-indigo-500 border-b-2 border-indigo-100 hover:border-indigo-500 transition-all uppercase tracking-widest pb-1">
+                        <p className="text-slate-400 text-xs md:text-sm font-medium mt-2 max-w-[16.25rem]">No immediate action required. Our AI agents are continuously monitoring for resource leaks.</p>
+                        <button className="mt-4 md:mt-8 text-[0.5625rem] md:text-[0.625rem] font-black text-indigo-500 border-b-2 border-indigo-100 hover:border-indigo-500 transition-all uppercase tracking-widest pb-1">
                             Run Manual Scan
                         </button>
                     </div>

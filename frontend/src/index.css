@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
     /* Solidified glass - more opaque to avoid 'whitish' blur washing out text */
@@ -183,28 +183,28 @@ h1, h2, h3 {
 .text-slate-500-solid { color: #64748b; }
 
 /* Responsive Utility Extensions */
-@media (max-width: 1440px) {
+@media (max-width: 90em) {
     .grid-responsive-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .grid-responsive-5 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 80em) {
     .grid-responsive-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .grid-responsive-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
     .grid-responsive-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
     
     /* Global scaling for smaller screens */
     :root {
-        --sidebar-width: 240px;
+        --sidebar-width: 15rem;
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 64em) {
     .grid-responsive-5 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .grid-responsive-4 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
 }
 
-@media (max-height: 800px) {
+@media (max-height: 50rem) {
     .sidebar-compact-padding { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
     .sidebar-compact-mb { margin-bottom: 2rem !important; }
 }

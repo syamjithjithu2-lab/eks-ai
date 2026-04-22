@@ -25,7 +25,7 @@ function ConfirmModal({ onEditFirst, onAnalyzeNow, onDismiss }) {
                     </div>
                     <div>
                         <p className="text-sm font-black text-slate-800 leading-tight">Before Sending to Agent</p>
-                        <p className="text-[9px] font-bold text-indigo-500 uppercase tracking-widest">AI Analysis</p>
+                        <p className="text-[0.5625rem] font-bold text-indigo-500 uppercase tracking-widest">AI Analysis</p>
                     </div>
                 </div>
 
@@ -40,19 +40,19 @@ function ConfirmModal({ onEditFirst, onAnalyzeNow, onDismiss }) {
                 <div className="flex flex-col gap-2">
                     <button
                         onClick={onAnalyzeNow}
-                        className="w-full text-[10px] font-black text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-100"
+                        className="w-full text-[0.625rem] font-black text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-100"
                     >
                         <Sparkles size={11} /> Analyze Now
                     </button>
                     <button
                         onClick={onEditFirst}
-                        className="w-full text-[10px] font-black text-slate-600 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all border border-slate-200"
+                        className="w-full text-[0.625rem] font-black text-slate-600 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all border border-slate-200"
                     >
                         <Edit3 size={11} /> Edit Logs First
                     </button>
                     <button
                         onClick={onDismiss}
-                        className="text-[9px] font-bold text-slate-400 hover:text-slate-600 text-center transition-colors py-1"
+                        className="text-[0.5625rem] font-bold text-slate-400 hover:text-slate-600 text-center transition-colors py-1"
                     >
                         Cancel
                     </button>
@@ -165,13 +165,13 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                     <h3 className="text-sm sm:text-base font-black text-slate-800 tracking-tight leading-tight">
                         Root Cause Analysis
                     </h3>
-                    <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate">
+                    <p className="text-[0.5625rem] sm:text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate">
                         {incident.id?.substring(0, 12) || 'N/A'}
                         &nbsp;·&nbsp;
                         {new Date(incident.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                 </div>
-                <span className={`text-[9px] sm:text-[10px] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider flex-shrink-0 ${badgeStyle}`}>
+                <span className={`text-[0.5625rem] sm:text-[0.625rem] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider flex-shrink-0 ${badgeStyle}`}>
                     {incident.severity}
                 </span>
             </div>
@@ -179,22 +179,22 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
             {/* ── METADATA BAR ── */}
             <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
                 <div className="flex-1 bg-white/80 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 border border-slate-200 shadow-sm min-w-0">
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
+                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
                         <Server size={8} className="text-indigo-500 flex-shrink-0" /> Cluster
                     </p>
-                    <p className="font-bold text-slate-700 text-[10px] sm:text-xs truncate">{incident.cluster}</p>
+                    <p className="font-bold text-slate-700 text-[0.625rem] sm:text-xs truncate">{incident.cluster}</p>
                 </div>
                 <div className="flex-1 bg-white/80 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 border border-slate-200 shadow-sm min-w-0">
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
+                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
                         <FileText size={8} className="text-violet-500 flex-shrink-0" /> Namespace
                     </p>
-                    <p className="font-bold text-slate-700 text-[10px] sm:text-xs truncate">{incident.namespace}</p>
+                    <p className="font-bold text-slate-700 text-[0.625rem] sm:text-xs truncate">{incident.namespace}</p>
                 </div>
                 <div className="flex-[1.8] bg-indigo-600 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 shadow-md min-w-0">
-                    <p className="text-[8px] sm:text-[9px] font-black text-indigo-200 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
+                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-indigo-200 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
                         <Zap size={8} className="flex-shrink-0" /> Pod
                     </p>
-                    <p className="font-mono text-[10px] sm:text-[11px] text-white font-bold truncate">{incident.pod}</p>
+                    <p className="font-mono text-[0.625rem] sm:text-[0.6875rem] text-white font-bold truncate">{incident.pod}</p>
                 </div>
             </div>
 
@@ -211,8 +211,8 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                                 <Sparkles size={13} className="text-white" />
                             </div>
                             <div className="text-left">
-                                <p className="text-[10px] sm:text-xs font-black text-indigo-700 leading-tight">Analyze with Agent</p>
-                                <p className="text-[8px] sm:text-[9px] text-indigo-400 font-semibold">Send logs for AI root cause analysis</p>
+                                <p className="text-[0.625rem] sm:text-xs font-black text-indigo-700 leading-tight">Analyze with Agent</p>
+                                <p className="text-[0.5rem] sm:text-[0.5625rem] text-indigo-400 font-semibold">Send logs for AI root cause analysis</p>
                             </div>
                         </div>
                         <ChevronRight size={14} className="text-indigo-400 group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
@@ -237,22 +237,22 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
 
                 {/* Result state */}
                 {analysisResult && !isAnalyzing && (
-                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 rounded-xl p-3 sm:p-4" style={{ maxHeight: 'clamp(100px, 18vh, 160px)', overflowY: 'auto' }}>
+                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 rounded-xl p-3 sm:p-4" style={{ maxHeight: 'clamp(6.25rem, 18vh, 10rem)', overflowY: 'auto' }}>
                         {/* Result header */}
                         <div className="flex items-center justify-between mb-2 flex-shrink-0">
-                            <p className="text-[9px] sm:text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-1.5">
+                            <p className="text-[0.5625rem] sm:text-[0.625rem] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-1.5">
                                 <CheckCircle2 size={11} className="text-indigo-500" /> Agent Analysis
                             </p>
                             <button
                                 onClick={() => setAnalysisResult(null)}
-                                className="text-[8px] font-bold text-slate-400 hover:text-slate-600 transition-colors"
+                                className="text-[0.5rem] font-bold text-slate-400 hover:text-slate-600 transition-colors"
                             >
                                 Re-analyze
                             </button>
                         </div>
 
                         {/* Answer */}
-                        <p className="text-[10px] sm:text-[11px] text-slate-700 leading-relaxed font-medium mb-2 whitespace-pre-wrap">
+                        <p className="text-[0.625rem] sm:text-[0.6875rem] text-slate-700 leading-relaxed font-medium mb-2 whitespace-pre-wrap">
                             {analysisResult.answer}
                         </p>
 
@@ -262,7 +262,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                                 {analysisResult.suggestions.map((s, i) => (
                                     <div key={i} className="flex items-start gap-1.5">
                                         <LightbulbIcon size={9} className="text-amber-500 flex-shrink-0 mt-0.5" />
-                                        <p className="text-[9px] sm:text-[10px] text-slate-600 font-medium leading-tight">{s}</p>
+                                        <p className="text-[0.5625rem] sm:text-[0.625rem] text-slate-600 font-medium leading-tight">{s}</p>
                                     </div>
                                 ))}
                             </div>
@@ -275,7 +275,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
             <div className="flex-1 flex flex-col min-h-0">
                 {/* Logs toolbar */}
                 <div className="flex items-center justify-between mb-1.5 sm:mb-2 px-0.5 flex-shrink-0">
-                    <p className="text-[8px] sm:text-[9px] font-black text-slate-500 flex items-center gap-1 sm:gap-1.5 uppercase tracking-widest">
+                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 sm:gap-1.5 uppercase tracking-widest">
                         <Clock size={9} className="text-indigo-500 flex-shrink-0" />
                         <span>Context Logs <span className="text-slate-400">({incident.logs?.length || 0} events)</span></span>
                     </p>
@@ -283,7 +283,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                     {!isEditing ? (
                         <button
                             onClick={handleEdit}
-                            className="text-[8px] sm:text-[9px] font-black text-indigo-600 hover:text-indigo-700 flex items-center gap-1 uppercase tracking-widest bg-indigo-50 hover:bg-indigo-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border border-indigo-100 transition-colors"
+                            className="text-[0.5rem] sm:text-[0.5625rem] font-black text-indigo-600 hover:text-indigo-700 flex items-center gap-1 uppercase tracking-widest bg-indigo-50 hover:bg-indigo-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border border-indigo-100 transition-colors"
                         >
                             <Edit3 size={8} /> Edit
                         </button>
@@ -291,13 +291,13 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                         <div className="flex items-center gap-1 sm:gap-1.5">
                             <button
                                 onClick={() => setIsEditing(false)}
-                                className="text-[8px] sm:text-[9px] font-black text-slate-500 flex items-center gap-1 uppercase tracking-widest bg-slate-100 hover:bg-slate-200 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border border-slate-200 transition-colors"
+                                className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 uppercase tracking-widest bg-slate-100 hover:bg-slate-200 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border border-slate-200 transition-colors"
                             >
                                 <X size={8} /> Cancel
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="text-[8px] sm:text-[9px] font-black text-white flex items-center gap-1 uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-md transition-all active:scale-95"
+                                className="text-[0.5rem] sm:text-[0.5625rem] font-black text-white flex items-center gap-1 uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-md transition-all active:scale-95"
                             >
                                 <Save size={8} /> Save
                             </button>
@@ -312,7 +312,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                             {incident.logs?.length > 0 ? incident.logs.map((log, i) => (
                                 <div
                                     key={i}
-                                    className={`leading-relaxed py-[1px] border-b border-white/5 last:border-0 text-[10px] sm:text-[11px] ${getLogColor(log)} ${log === incident.triggerLog ? 'bg-rose-500/20 -mx-2 px-2 rounded border-l-2 border-rose-400' : ''}`}
+                                    className={`leading-relaxed py-[1px] border-b border-white/5 last:border-0 text-[0.625rem] sm:text-[0.6875rem] ${getLogColor(log)} ${log === incident.triggerLog ? 'bg-rose-500/20 -mx-2 px-2 rounded border-l-2 border-rose-400' : ''}`}
                                 >
                                     <span className="opacity-25 mr-1.5 select-none tabular-nums">
                                         {(i + 1).toString().padStart(2, '0')}
@@ -328,7 +328,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                             value={localLogs}
                             onChange={(e) => setLocalLogs(e.target.value)}
                             spellCheck="false"
-                            className="flex-1 w-full bg-transparent text-slate-300 p-3 sm:p-4 focus:outline-none resize-none custom-scrollbar leading-relaxed text-[10px] sm:text-[11px]"
+                            className="flex-1 w-full bg-transparent text-slate-300 p-3 sm:p-4 focus:outline-none resize-none custom-scrollbar leading-relaxed text-[0.625rem] sm:text-[0.6875rem]"
                             placeholder="Edit logs here — one entry per line. Delete a line to remove it from context."
                         />
                     )}

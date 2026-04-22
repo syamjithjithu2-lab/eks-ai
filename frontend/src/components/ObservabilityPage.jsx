@@ -65,7 +65,7 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
                 </div>
                 <div className="flex items-center gap-4">
                      <div className="bg-white/80 border border-slate-300 py-2.5 px-5 rounded-2xl shadow-sm">
-                          <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">{filtered.length} EVENTS</span>
+                          <span className="text-[0.625rem] font-black text-slate-800 uppercase tracking-widest">{filtered.length} EVENTS</span>
                      </div>
                     <button
                         onClick={() => setAutoScroll(v => !v)}
@@ -85,7 +85,7 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
                             <cfg.icon size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{level}</p>
+                            <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest">{level}</p>
                             <p className={`text-2xl font-black ${cfg.color} tracking-tight`}>{counts[level]}</p>
                         </div>
                     </div>
@@ -100,7 +100,7 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
                             <button
                                 key={lvl}
                                 onClick={() => setLevelFilter(lvl)}
-                                className={`px-4 py-2 text-[10px] font-black rounded-xl transition-all duration-300 border uppercase tracking-wider ${
+                                className={`px-4 py-2 text-[0.625rem] font-black rounded-xl transition-all duration-300 border uppercase tracking-wider ${
                                     levelFilter === lvl
                                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-100'
                                         : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
@@ -124,7 +124,7 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
                 </div>
 
                 <div
-                    className="flex-1 overflow-auto font-mono text-[11px] p-6 bg-white/40 custom-scrollbar"
+                    className="flex-1 overflow-auto font-mono text-[0.6875rem] p-6 bg-white/40 custom-scrollbar"
                     onScroll={e => {
                         const el = e.currentTarget;
                         const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
@@ -147,7 +147,7 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
                                         <span className="text-slate-600 shrink-0 font-bold opacity-80">
                                             {entry.timestamp.substring(11, 23)}
                                         </span>
-                                        <span className={`shrink-0 text-[9px] font-black px-2 py-0.5 rounded border uppercase tracking-widest min-w-[70px] text-center ${cfg.badge}`}>
+                                        <span className={`shrink-0 text-[0.5625rem] font-black px-2 py-0.5 rounded border uppercase tracking-widest min-w-[4.375rem] text-center ${cfg.badge}`}>
                                             {entry.level}
                                         </span>
                                         <span className="text-indigo-500 font-bold shrink-0 opacity-80 group-hover:opacity-100">

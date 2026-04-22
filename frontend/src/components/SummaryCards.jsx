@@ -19,10 +19,10 @@ export default function SummaryCards() {
                         </div>
                         <div className={`w-1.5 h-1.5 rounded-full bg-${card.color}-500 animate-pulse mt-1`}></div>
                     </div>
-                    <p className="text-[8px] md:text-[9px] lg:text-[10px] font-black text-slate-700 uppercase tracking-[0.15em] mb-1">{card.title}</p>
+                    <p className="text-[0.5rem] md:text-[0.5625rem] lg:text-[0.625rem] font-black text-slate-700 uppercase tracking-[0.15em] mb-1">{card.title}</p>
                     <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-slate-800 tracking-tighter group-hover:translate-x-1 transition-transform duration-500">{card.value}</p>
                     <div className="mt-2 md:mt-4 lg:mt-6">
-                        <span className={`text-[8px] md:text-[10px] font-black px-2 md:px-4 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-${card.color}-50 text-${card.color}-600 border border-${card.color}-100/50 uppercase tracking-widest`}>
+                        <span className={`text-[0.5rem] md:text-[0.625rem] font-black px-2 md:px-4 py-1 md:py-1.5 rounded-lg md:rounded-xl bg-${card.color}-50 text-${card.color}-600 border border-${card.color}-100/50 uppercase tracking-widest`}>
                             {card.status}
                         </span>
                     </div>
