@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useMemo, memo } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import io from 'socket.io-client';
-import { Activity } from 'lucide-react';
+import { Activity, Menu } from 'lucide-react';
 
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -21,6 +21,7 @@ import PRHub from './components/PRHub';
 
 export default function App() {
     const [activePage, setActivePage] = useState('overview');
+    const [sidebarOpen, setSidebarOpen] = useState(false); // mobile sidebar state
 
     const [clusters, setClusters] = useState([]);
     const [selectedCluster, setSelectedCluster] = useState(null);
@@ -91,6 +92,7 @@ export default function App() {
         });
 
         return () => { 
+            window.removeEventListener('nav-change', handleNav);
             socket.removeAllListeners(); 
             socket.disconnect(); 
             clearInterval(logTimer);
@@ -177,22 +179,22 @@ export default function App() {
 
             case 'incidents':
                 return (
-                    <div className="h-full flex flex-col p-8 overflow-hidden">
+                    <div className="h-full flex flex-col p-4 md:p-8 overflow-hidden">
                         <div className="mb-6 flex-shrink-0">
-                            <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-4">
+                            <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight flex items-center gap-4">
                                 Incidents
                                 <span className="text-[0.625rem] font-black bg-rose-50 text-rose-600 px-3 py-1 rounded-full border border-rose-100 uppercase tracking-[0.2em]">Live Analysis</span>
                             </h1>
                             <p className="text-slate-500 font-medium text-sm mt-1">Real-time root cause detection & remediation</p>
                         </div>
-                        <div className="flex-1 flex flex-col lg:flex-row gap-8 min-h-0">
-                            <div className="w-full lg:w-[40%] h-[40%] lg:h-full">
+                        <div className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0">
+                            <div className="w-full lg:w-[40%] h-[45%] lg:h-full">
                                 <IncidentList
                                     incidents={incidents}
                                     onSelect={setSelectedIncident}
                                 />
                             </div>
-                            <div className="w-full lg:w-[60%] h-[60%] lg:h-full">
+                            <div className="w-full lg:w-[60%] h-[55%] lg:h-full">
                                 <IncidentAnalysis 
                                     incident={selectedIncident} 
                                     onUpdateLogs={handleUpdateIncidentLogs}
@@ -227,6 +229,7 @@ export default function App() {
     return (
         <div className="flex h-screen text-slate-900 overflow-hidden relative">
             <div className="light-mesh" />
+
             <Sidebar
                 activePage={activePage}
                 setActivePage={setActivePage}
@@ -235,9 +238,11 @@ export default function App() {
                 selectedNamespace={selectedNamespace}
                 selectedPod={selectedPod}
                 isConnected={isConnected}
+                isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
             />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-hidden min-w-0">
                 <Header
                     clusters={clusters}
                     selectedCluster={selectedCluster}
@@ -247,6 +252,7 @@ export default function App() {
                     selectedPod={selectedPod}
                     setSelectedPod={setSelectedPod}
                     isConnected={isConnected}
+                    onMenuClick={() => setSidebarOpen(true)}
                 />
 
                 <div className="flex-1 min-h-0 flex flex-col overflow-y-auto custom-scrollbar">

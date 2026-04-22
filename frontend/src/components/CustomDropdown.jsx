@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, memo } from 'react';
 import { ChevronDown, Search, Check } from 'lucide-react';
 
-export default function CustomDropdown({ 
+const CustomDropdown = memo(function CustomDropdown({ 
     label, 
     options, 
     value, 
@@ -38,13 +38,15 @@ export default function CustomDropdown({
         <div className={`relative ${className}`} ref={dropdownRef}>
             <div 
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 bg-white/60 hover:bg-white/90 rounded-2xl px-4 py-2.5 border border-slate-200/60 cursor-pointer transition-all duration-300 shadow-sm group select-none"
+                className="flex items-center gap-2 md:gap-3 bg-white/60 hover:bg-white/90 rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-2.5 border border-slate-200/60 cursor-pointer transition-all duration-300 shadow-sm group select-none"
             >
-                <span className="text-[0.625rem] font-black text-slate-500 uppercase tracking-widest leading-none">{label}</span>
-                <span className="text-sm font-bold text-slate-800 truncate leading-none min-w-[6.25rem]">
+                <span className="text-[0.5625rem] md:text-[0.625rem] font-black text-slate-500 uppercase tracking-widest leading-none hidden sm:inline">
+                    {label}
+                </span>
+                <span className="text-xs md:text-sm font-bold text-slate-800 truncate leading-none min-w-[5rem] md:min-w-[6.25rem]">
                     {activeItem ? activeItem.label : placeholder}
                 </span>
-                <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
             </div>
 
             {isOpen && (
@@ -90,4 +92,6 @@ export default function CustomDropdown({
             )}
         </div>
     );
-}
+});
+
+export default CustomDropdown;

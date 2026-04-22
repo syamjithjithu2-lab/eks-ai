@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { User } from 'lucide-react';
+import { User, Menu } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 
 const Header = memo(({
@@ -7,11 +7,20 @@ const Header = memo(({
     selectedCluster, setSelectedCluster,
     selectedNamespace, setSelectedNamespace,
     selectedPod, setSelectedPod,
-    isConnected
+    isConnected,
+    onMenuClick,
 }) => {
     return (
-        <div className="h-14 md:h-16 lg:h-20 glass-header flex items-center justify-between px-3 md:px-6 lg:px-10 z-40">
+        <div className="h-14 md:h-16 lg:h-20 glass-header flex items-center justify-between px-3 md:px-6 lg:px-10 z-40 flex-shrink-0">
             <div className="flex items-center gap-1.5 md:gap-3">
+                {/* Mobile hamburger — only shown on screens smaller than lg */}
+                <button
+                    onClick={onMenuClick}
+                    className="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors mr-1 flex-shrink-0"
+                    aria-label="Open navigation"
+                >
+                    <Menu size={20} className="text-slate-600" />
+                </button>
 
                 {/* Cluster Select */}
                 <CustomDropdown
@@ -76,7 +85,7 @@ const Header = memo(({
                 )}
             </div>
 
-            <div className="flex items-center gap-2 md:gap-4 lg:gap-6">
+            <div className="flex items-center gap-2 md:gap-4 lg:gap-6 flex-shrink-0">
                 {isConnected ? (
                     <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 text-[0.5625rem] md:text-[0.625rem] font-bold px-2.5 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl flex items-center gap-1.5 shadow-sm">
                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-emerald-500/40 shadow-lg"></div>

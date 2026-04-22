@@ -17,12 +17,11 @@ body {
     font-family: 'Inter', system-ui, sans-serif;
     color: #0f172a;
     overflow: hidden;
-    /* Darker background base to ground the UI */
     background: #f1f5f9; 
     -webkit-font-smoothing: antialiased;
 }
 
-/* Noise Texture Overlay */
+/* Noise Texture Overlay — z-index lowered to avoid fighting modals/dropdowns */
 body::before {
     content: "";
     position: fixed;
@@ -31,13 +30,13 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.03; /* Slightly lower opacity */
+    opacity: 0.03;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 1;  /* was 9999 — now below dropdowns/modals */
     mix-blend-mode: overlay;
 }
 
-/* Optimized Mesh Background - Fewer gradients, lower blur */
+/* Optimized Mesh Background — GPU-accelerated, fewer gradients */
 .mesh-bg {
     position: fixed;
     top: 0;
@@ -54,12 +53,11 @@ body::before {
         radial-gradient(at 100% 100%, hsla(273,43%,30%,1) 0, transparent 50%);
     background-blend-mode: overlay;
     opacity: 0.12; 
-    filter: blur(40px); /* Reduced from 80px */
-    animation: mesh-move 40s linear infinite alternate; /* Slower for CPU relief */
+    filter: blur(40px);
+    animation: mesh-move 40s linear infinite alternate;
     will-change: transform;
 }
 
-/* Reduced light overlay to prevent 'whitish' washout */
 /* Optimized light overlay */
 .light-mesh {
     position: fixed;
@@ -73,7 +71,7 @@ body::before {
         radial-gradient(at 19% 19%, hsla(221,100%,94%,1) 0, transparent 50%), 
         radial-gradient(at 81% 20%, hsla(263,100%,94%,1) 0, transparent 50%), 
         radial-gradient(at 73% 71%, hsla(217,100%,94%,1) 0, transparent 50%);
-    filter: blur(30px); /* Reduced from 50px */
+    filter: blur(30px);
     opacity: 0.4; 
     animation: mesh-move 50s ease-in-out infinite alternate;
     will-change: transform;
@@ -84,9 +82,10 @@ body::before {
     100% { transform: translate(-3%, -3%) rotate(0.5deg); }
 }
 
+/* ─── Performance: Isolate repaint boundaries on glass cards ─── */
 .glass-card {
     background: var(--glass-bg);
-    backdrop-filter: blur(8px) saturate(180%); /* Reduced from 12px */
+    backdrop-filter: blur(8px) saturate(180%);
     -webkit-backdrop-filter: blur(8px) saturate(180%);
     border: 1px solid var(--glass-border);
     box-shadow: 
@@ -94,6 +93,8 @@ body::before {
         0 4px 6px -4px rgba(0, 0, 0, 0.05),
         inset 0 0 0 1px rgba(255, 255, 255, 0.3);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    contain: layout paint; /* isolates repaint — big perf win */
+    position: relative;    /* required for ::after pseudo-element */
 }
 
 .glass-card::after {
@@ -101,7 +102,7 @@ body::before {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    padding: 1.5px; /* Slightly thicker border edge */
+    padding: 1.5px;
     background: linear-gradient(135deg, rgba(255,255,255,0.6), transparent, rgba(99,102,241,0.2));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -120,7 +121,7 @@ body::before {
 }
 
 .glass-sidebar {
-    background: rgba(255, 255, 255, 0.85); /* More solid */
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-right: 1px solid rgba(0, 0, 0, 0.05);
@@ -134,7 +135,7 @@ body::before {
 }
 
 .glass-card-indigo {
-    background: rgba(79, 70, 229, 0.9); /* Solid Indigo */
+    background: rgba(79, 70, 229, 0.9);
     backdrop-filter: blur(25px) saturate(200%);
     -webkit-backdrop-filter: blur(25px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -143,6 +144,7 @@ body::before {
         inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -164,8 +166,8 @@ body::before {
 /* Premium Typography */
 h1, h2, h3 {
     letter-spacing: -0.03em;
-    font-weight: 900; /* Extra bold */
-    color: #1e293b; /* Dark slate */
+    font-weight: 900;
+    color: #1e293b;
 }
 
 .font-tech {
@@ -187,7 +189,6 @@ h1, h2, h3 {
     .grid-responsive-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
     .grid-responsive-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
     
-    /* Global scaling for smaller screens */
     :root {
         --sidebar-width: 15rem;
     }
@@ -201,6 +202,30 @@ h1, h2, h3 {
 @media (max-height: 50rem) {
     .sidebar-compact-padding { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
     .sidebar-compact-mb { margin-bottom: 2rem !important; }
+}
+
+/* ─── Mobile Sidebar Overlay ─── */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar-mobile.open {
+    transform: translateX(0);
 }
 
 /* Custom Dropdown Animations */
@@ -222,3 +247,27 @@ h1, h2, h3 {
 
 .fade-in { animation-name: fadeIn; }
 .slide-in-from-top-2 { animation-name: slide-in-from-top-2; }
+
+/* ─── Accessibility: Reduce Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+    /* Kill all CSS animations */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Specifically disable heavy background animations */
+    .mesh-bg,
+    .light-mesh {
+        animation: none !important;
+    }
+
+    /* Keep glass-card hover transform but instant */
+    .glass-card:hover {
+        transform: none;
+    }
+}

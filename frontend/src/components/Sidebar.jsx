@@ -1,7 +1,7 @@
 import { memo } from 'react';
-import { Activity, Users, AlertTriangle, Shield, BarChart3, DollarSign, Command, Sparkles, GitPullRequest } from 'lucide-react';
+import { Activity, Users, AlertTriangle, Shield, BarChart3, DollarSign, Command, Sparkles, GitPullRequest, X } from 'lucide-react';
 
-const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected }) => {
+const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected, isOpen, onClose }) => {
     const menuItems = [
         { id: 'overview', icon: Activity, label: "Overview" },
         { id: 'agents', icon: Users, label: "Agents" },
@@ -43,16 +43,31 @@ const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedClu
         }
     }
 
-    return (
-        <aside className="w-[clamp(14rem,18vw,20rem)] flex-shrink-0 glass-sidebar flex flex-col z-10 box-border p-8 sidebar-compact-padding">
+    const handleNavClick = (id) => {
+        setActivePage(id);
+        if (onClose) onClose(); // close mobile sidebar on nav
+    };
+
+    const sidebarContent = (
+        <aside className="w-[clamp(14rem,18vw,20rem)] flex-shrink-0 glass-sidebar flex flex-col z-10 box-border p-8 sidebar-compact-padding h-full">
             <div className="flex items-center gap-4 mb-16 sidebar-compact-mb px-2">
                 <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-100 ring-4 ring-white">
                     <Command className="text-white" size={28} />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                     <h2 className="text-[1.125rem] font-black text-slate-800 tracking-tighter leading-none">EKS AI</h2>
                     <p className="text-[0.625rem] font-black text-slate-600 uppercase tracking-[0.2em] mt-1">Platform Core</p>
                 </div>
+                {/* Mobile close button */}
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        className="lg:hidden w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors flex-shrink-0"
+                        aria-label="Close sidebar"
+                    >
+                        <X size={18} className="text-slate-500" />
+                    </button>
+                )}
             </div>
 
             <nav className="space-y-3 flex-1 px-1 overflow-y-auto custom-scrollbar pr-2 h-0 min-h-0">
@@ -60,7 +75,7 @@ const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedClu
                 {menuItems.map((item) => (
                     <div
                         key={item.id}
-                        onClick={() => setActivePage(item.id)}
+                        onClick={() => handleNavClick(item.id)}
                         className={`flex items-center gap-4 px-5 py-4 rounded-[1.5rem] cursor-pointer transition-all duration-500 group relative ${activePage === item.id
                                 ? 'bg-indigo-600 text-white shadow-2xl shadow-indigo-200 -translate-y-1 scale-[1.02]'
                                 : 'hover:bg-indigo-50 text-slate-500 hover:text-indigo-600'
@@ -105,6 +120,29 @@ const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedClu
                 </div>
             </div>
         </aside>
+    );
+
+    return (
+        <>
+            {/* Desktop: always-visible sidebar */}
+            <div className="hidden lg:flex h-full">
+                {sidebarContent}
+            </div>
+
+            {/* Mobile: slide-in overlay sidebar */}
+            <div className={`lg:hidden sidebar-mobile ${isOpen ? 'open' : ''}`}>
+                {sidebarContent}
+            </div>
+
+            {/* Mobile backdrop */}
+            {isOpen && (
+                <div
+                    className="lg:hidden sidebar-overlay"
+                    onClick={onClose}
+                    aria-hidden="true"
+                />
+            )}
+        </>
     );
 });
 
