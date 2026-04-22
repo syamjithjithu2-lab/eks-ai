@@ -21,26 +21,26 @@ const OptimizationTimeline = memo(({ prs }) => {
                 <ChevronRight className="text-slate-300" size={20} />
             </div>
 
-            <div className="space-y-4 md:space-y-6 flex-1 overflow-auto pr-2 custom-scrollbar relative z-10">
+            <div className="space-y-6 flex-1 overflow-auto pr-2 custom-scrollbar relative z-10">
                 {prs && prs.length > 0 ? (
                     prs.slice(0, 3).map((pr, i) => (
-                        <div key={i} className="flex items-center justify-between gap-4 p-4 md:p-6 bg-white/60 border border-white/80 rounded-2xl md:rounded-[2rem] hover:bg-white transition-all duration-300 group shadow-sm/50">
+                        <div key={i} className="flex items-center justify-between gap-6 p-8 bg-white/60 border border-white/80 rounded-[2.5rem] hover:bg-white transition-all duration-300 group shadow-sm/50">
                             <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                <div className="flex items-center gap-2 mb-1.5">
-                                    <span className="text-[0.5rem] md:text-[0.5625rem] font-black px-2 py-0.5 bg-emerald-600 text-white rounded-md uppercase tracking-widest shadow-sm">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="text-[0.625rem] font-black px-4 py-1 bg-emerald-600 text-white rounded-lg uppercase tracking-[0.2em] shadow-lg shadow-emerald-100">
                                         PR #{Math.floor(Math.random() * 900) + 100}
                                     </span>
-                                    <span className="text-[0.5625rem] md:text-[0.625rem] font-bold text-slate-500">/ {pr.cluster}</span>
+                                    <span className="text-[0.625rem] font-black text-slate-500 uppercase tracking-widest">/ {pr.cluster}</span>
                                 </div>
-                                <p className="font-bold text-slate-800 text-sm md:text-lg leading-tight group-hover:text-emerald-600 transition-colors truncate">{pr.title}</p>
+                                <p className="font-black text-slate-800 text-xl tracking-tight group-hover:text-emerald-600 transition-colors truncate leading-tight">{pr.title}</p>
                             </div>
 
-                            <div className="flex flex-col items-end justify-center min-w-[4.375rem] md:min-w-[6.25rem]">
-                                <div className="flex items-center gap-1 mb-1.5">
-                                    <CheckCircle2 size={10} className="text-emerald-500" />
-                                    <span className="text-[0.5rem] md:text-[0.625rem] font-black text-emerald-600 uppercase tracking-widest">{pr.status}</span>
+                            <div className="flex flex-col items-end justify-center min-w-[7.5rem]">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <CheckCircle2 size={12} className="text-emerald-500" />
+                                    <span className="text-[0.625rem] font-black text-emerald-600 uppercase tracking-[0.2em]">{pr.status}</span>
                                 </div>
-                                <div className="text-base md:text-xl font-black text-slate-800">
+                                <div className="text-3xl font-black text-slate-800 tracking-tighter">
                                     {pr.savings}
                                 </div>
                             </div>

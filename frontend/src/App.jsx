@@ -63,6 +63,10 @@ export default function App() {
             logBuffer.push(entry);
         });
 
+        socket.on('incidents', (data) => {
+            setIncidents(data);
+        });
+
         socket.on('incident', (inc) => {
             setIncidents(prev => {
                 const existing = prev.findIndex(p => p.id === inc.id);
@@ -73,6 +77,10 @@ export default function App() {
                 }
                 return [inc, ...prev];
             });
+        });
+
+        socket.on('prs', (data) => {
+            setPrs(data);
         });
 
         socket.on('pr-update', (pr) => {
@@ -169,24 +177,25 @@ export default function App() {
 
             case 'incidents':
                 return (
-                    <div className="h-full flex flex-col p-4 md:p-6 lg:p-10 overflow-hidden">
-                        <h1 className="text-xl md:text-2xl lg:text-3xl font-black text-slate-800 tracking-tight mb-4 flex items-center gap-3 flex-shrink-0">
-                            Active Incidents
-                            <span className="text-rose-500 text-[0.625rem] font-black bg-rose-50 px-3 py-1 rounded-full border border-rose-100 uppercase tracking-widest">LIVE</span>
-                        </h1>
-                        <div className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-10 min-h-0">
+                    <div className="h-full flex flex-col p-8 overflow-hidden">
+                        <div className="mb-6 flex-shrink-0">
+                            <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-4">
+                                Incidents
+                                <span className="text-[0.625rem] font-black bg-rose-50 text-rose-600 px-3 py-1 rounded-full border border-rose-100 uppercase tracking-[0.2em]">Live Analysis</span>
+                            </h1>
+                            <p className="text-slate-500 font-medium text-sm mt-1">Real-time root cause detection & remediation</p>
+                        </div>
+                        <div className="flex-1 flex flex-col lg:flex-row gap-8 min-h-0">
                             <div className="w-full lg:w-[40%] h-[40%] lg:h-full">
                                 <IncidentList
                                     incidents={incidents}
                                     onSelect={setSelectedIncident}
-                               Props={{ className: "h-full" }}
                                 />
                             </div>
                             <div className="w-full lg:w-[60%] h-[60%] lg:h-full">
                                 <IncidentAnalysis 
                                     incident={selectedIncident} 
                                     onUpdateLogs={handleUpdateIncidentLogs}
-                                Props={{ className: "h-full" }}
                                 />
                             </div>
                         </div>

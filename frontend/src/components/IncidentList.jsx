@@ -8,35 +8,35 @@ const SEVERITY_STYLES = {
 
 const IncidentList = memo(({ incidents, onSelect }) => {
     return (
-        <div className="glass-card rounded-2xl p-3 sm:p-4 lg:p-5 h-full overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between mb-3 sm:mb-4 flex-shrink-0">
-                <h3 className="text-sm sm:text-base font-black text-slate-800 tracking-tight flex items-center gap-2">
+        <div className="glass-card rounded-[3rem] p-8 h-full overflow-hidden flex flex-col bg-white/40">
+            <div className="flex items-center justify-between mb-8 flex-shrink-0">
+                <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
                     Active Incidents
-                    <div className="flex items-center gap-1 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
-                        <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shadow-rose-500/40 shadow-lg"></div>
-                        <span className="text-[0.5625rem] font-black text-rose-600 uppercase tracking-wider">Live</span>
+                    <div className="flex items-center gap-1.5 bg-rose-50 px-3 py-1 rounded-full border border-rose-100">
+                        <div className="w-2 h-2 bg-rose-500 rounded-full animate-pulse shadow-rose-500/40 shadow-lg"></div>
+                        <span className="text-[0.625rem] font-black text-rose-600 uppercase tracking-[0.1em]">Live</span>
                     </div>
                 </h3>
-                <span className="text-[0.5625rem] sm:text-[0.625rem] font-black text-slate-700 uppercase tracking-widest bg-slate-100/80 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl border border-slate-200">
+                <span className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest bg-white/80 px-4 py-1.5 rounded-xl border border-slate-200 shadow-sm">
                     {incidents.length} total
                 </span>
             </div>
 
-            <div className="space-y-2 sm:space-y-3 flex-1 overflow-auto pr-1 custom-scrollbar">
+            <div className="space-y-4 flex-1 overflow-auto pr-2 custom-scrollbar">
                 {incidents.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 sm:py-20 text-center">
-                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-50 rounded-full flex items-center justify-center mb-3 sm:mb-4">
-                            <span className="text-2xl sm:text-3xl">🛡️</span>
+                    <div className="flex flex-col items-center justify-center py-24 text-center opacity-40">
+                        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 border border-slate-100">
+                            <span className="text-4xl">🛡️</span>
                         </div>
-                        <p className="font-bold text-slate-800 text-sm">Clear Skies</p>
-                        <p className="text-xs text-slate-600 mt-1 max-w-[11.25rem]">No incidents detected. System is running optimally.</p>
+                        <p className="text-lg font-black text-slate-800 uppercase tracking-widest">Clear Skies</p>
+                        <p className="text-sm font-medium text-slate-500 mt-2 max-w-[15rem] mx-auto">No incidents detected. System is running optimally.</p>
                     </div>
                 ) : (
                     incidents.slice(0, 50).map((inc, i) => (
                         <div
                             key={inc.id || i}
                             onClick={() => onSelect(inc)}
-                            className="bg-white/80 hover:bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-200 flex justify-between items-start gap-2 sm:gap-3 border border-slate-200/50 hover:border-indigo-200 shadow-sm hover:shadow-lg hover:shadow-indigo-50/50 group hover:-translate-y-0.5"
+                            className="bg-white/80 hover:bg-white p-6 rounded-2xl cursor-pointer transition-all duration-300 flex justify-between items-start gap-4 border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-indigo-100/50 group hover:-translate-y-1"
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="font-black text-slate-800 truncate leading-none mb-1 text-xs sm:text-sm group-hover:text-indigo-600 transition-colors">{inc.pod}</p>

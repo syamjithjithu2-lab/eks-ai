@@ -57,11 +57,11 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
     }, [filtered]);
 
     return (
-        <div className="p-8 h-full flex flex-col gap-6">
+        <div className="p-10 h-full flex flex-col gap-10">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Observability</h1>
-                    <p className="text-slate-500 font-medium text-sm mt-1">Real-time log intelligence & distributed tracing</p>
+                    <h1 className="text-4xl font-black text-slate-800 tracking-tight">Observability</h1>
+                    <p className="text-slate-500 font-medium mt-1">Real-time log intelligence & distributed tracing</p>
                 </div>
                 <div className="flex items-center gap-4">
                      <div className="bg-white/80 border border-slate-300 py-2.5 px-5 rounded-2xl shadow-sm">
@@ -69,7 +69,7 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
                      </div>
                     <button
                         onClick={() => setAutoScroll(v => !v)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all duration-300 shadow-sm ${autoScroll ? 'bg-indigo-600 text-white shadow-indigo-100 hover:bg-indigo-700' : 'bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100'}`}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 shadow-xl ${autoScroll ? 'bg-indigo-600 text-white shadow-indigo-100 hover:bg-indigo-700' : 'bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100'}`}
                     >
                         {autoScroll ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
                         {autoScroll ? 'LIVE CAPTURE' : 'PAUSED'}
@@ -78,11 +78,11 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
             </div>
 
             {/* Stats row */}
-            <div className="grid grid-cols-4 gap-6">
+            <div className="grid grid-cols-4 gap-8">
                 {Object.entries(LEVEL_CONFIG).map(([level, cfg]) => (
-                    <div key={level} className="glass-card rounded-[2rem] p-5 flex items-center gap-4 group">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-300 ${cfg.badge} group-hover:scale-110 shadow-sm`}>
-                            <cfg.icon size={20} />
+                    <div key={level} className="glass-card rounded-[2.5rem] p-6 flex items-center gap-4 group">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border transition-all duration-300 ${cfg.badge} group-hover:scale-110 shadow-sm`}>
+                            <cfg.icon size={24} />
                         </div>
                         <div>
                             <p className="text-[0.625rem] font-black text-slate-700 uppercase tracking-widest">{level}</p>
@@ -93,16 +93,16 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
             </div>
 
             {/* Filter & Terminal Area */}
-            <div className="glass-card rounded-[2.5rem] flex-1 flex flex-col overflow-hidden">
-                <div className="p-6 border-b border-slate-100 bg-white/20 flex flex-wrap items-center gap-4">
-                    <div className="flex gap-1.5 ">
+            <div className="glass-card rounded-[3rem] flex-1 flex flex-col overflow-hidden bg-white/40">
+                <div className="p-8 border-b border-slate-100 bg-white/20 flex flex-wrap items-center gap-6">
+                    <div className="flex gap-2">
                         {LEVELS.map(lvl => (
                             <button
                                 key={lvl}
                                 onClick={() => setLevelFilter(lvl)}
-                                className={`px-4 py-2 text-[0.625rem] font-black rounded-xl transition-all duration-300 border uppercase tracking-wider ${
+                                className={`px-5 py-2.5 text-[0.625rem] font-black rounded-xl transition-all duration-300 border uppercase tracking-[0.1em] ${
                                     levelFilter === lvl
-                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg shadow-indigo-100'
+                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xl shadow-indigo-100'
                                         : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
                                 }`}
                             >
@@ -111,14 +111,14 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-2 bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2 w-64 shadow-inner ml-auto">
-                        <Search size={14} className="text-slate-500" />
+                    <div className="flex items-center gap-3 bg-white/80 border border-slate-200 rounded-2xl px-5 py-3 w-full max-w-sm shadow-sm focus-within:ring-4 ring-indigo-50 transition-all ml-auto">
+                        <Search size={18} className="text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Search logs..."
+                            placeholder="Search logs across fleet..." 
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            className="bg-transparent outline-none text-xs font-bold text-slate-800 placeholder-slate-500 w-full"
+                            className="bg-transparent outline-none text-sm font-bold text-slate-800 placeholder-slate-400 w-full"
                         />
                     </div>
                 </div>

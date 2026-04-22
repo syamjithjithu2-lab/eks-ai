@@ -148,7 +148,7 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
     };
 
     return (
-        <div className="glass-card rounded-2xl p-3 sm:p-4 lg:p-5 h-full overflow-hidden flex flex-col gap-2 sm:gap-3 relative">
+        <div className="glass-card rounded-[3rem] p-8 h-full overflow-hidden flex flex-col gap-6 relative bg-white/40">
 
             {/* ── CONFIRMATION MODAL (overlay) ─────────────────────── */}
             {showConfirm && (
@@ -160,41 +160,41 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
             )}
 
             {/* ── HEADER ── */}
-            <div className="flex items-start justify-between gap-2 flex-shrink-0">
+            <div className="flex items-start justify-between gap-4 flex-shrink-0">
                 <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-black text-slate-800 tracking-tight leading-tight">
+                    <h3 className="text-xl font-black text-slate-800 tracking-tight leading-tight">
                         Root Cause Analysis
                     </h3>
-                    <p className="text-[0.5625rem] sm:text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate">
-                        {incident.id?.substring(0, 12) || 'N/A'}
+                    <p className="text-[0.625rem] font-black text-slate-500 uppercase tracking-widest mt-1 truncate">
+                        ID: {incident.id?.substring(0, 12) || 'N/A'}
                         &nbsp;·&nbsp;
-                        {new Date(incident.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(incident.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </p>
                 </div>
-                <span className={`text-[0.5625rem] sm:text-[0.625rem] font-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider flex-shrink-0 ${badgeStyle}`}>
+                <span className={`text-[0.625rem] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.15em] flex-shrink-0 ${badgeStyle}`}>
                     {incident.severity}
                 </span>
             </div>
 
             {/* ── METADATA BAR ── */}
-            <div className="flex gap-1.5 sm:gap-2 flex-shrink-0">
-                <div className="flex-1 bg-white/80 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 border border-slate-200 shadow-sm min-w-0">
-                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
-                        <Server size={8} className="text-indigo-500 flex-shrink-0" /> Cluster
+            <div className="flex gap-4 flex-shrink-0">
+                <div className="flex-1 bg-white/80 rounded-2xl p-4 border border-slate-200 shadow-sm min-w-0">
+                    <p className="text-[0.5625rem] font-black text-slate-500 flex items-center gap-2 mb-1.5 uppercase tracking-widest">
+                        <Server size={10} className="text-indigo-500 flex-shrink-0" /> Cluster
                     </p>
-                    <p className="font-bold text-slate-700 text-[0.625rem] sm:text-xs truncate">{incident.cluster}</p>
+                    <p className="font-black text-slate-800 text-xs truncate">{incident.cluster}</p>
                 </div>
-                <div className="flex-1 bg-white/80 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 border border-slate-200 shadow-sm min-w-0">
-                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-slate-500 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
-                        <FileText size={8} className="text-violet-500 flex-shrink-0" /> Namespace
+                <div className="flex-1 bg-white/80 rounded-2xl p-4 border border-slate-200 shadow-sm min-w-0">
+                    <p className="text-[0.5625rem] font-black text-slate-500 flex items-center gap-2 mb-1.5 uppercase tracking-widest">
+                        <FileText size={10} className="text-violet-500 flex-shrink-0" /> Namespace
                     </p>
-                    <p className="font-bold text-slate-700 text-[0.625rem] sm:text-xs truncate">{incident.namespace}</p>
+                    <p className="font-black text-slate-800 text-xs truncate">{incident.namespace}</p>
                 </div>
-                <div className="flex-[1.8] bg-indigo-600 rounded-lg sm:rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 shadow-md min-w-0">
-                    <p className="text-[0.5rem] sm:text-[0.5625rem] font-black text-indigo-200 flex items-center gap-1 mb-0.5 uppercase tracking-widest">
-                        <Zap size={8} className="flex-shrink-0" /> Pod
+                <div className="flex-[1.8] bg-indigo-600 rounded-2xl p-4 shadow-xl shadow-indigo-100 min-w-0 border border-indigo-500">
+                    <p className="text-[0.5625rem] font-black text-indigo-200 flex items-center gap-2 mb-1.5 uppercase tracking-widest">
+                        <Zap size={10} className="flex-shrink-0" /> Target Pod
                     </p>
-                    <p className="font-mono text-[0.625rem] sm:text-[0.6875rem] text-white font-bold truncate">{incident.pod}</p>
+                    <p className="font-mono text-sm text-white font-black truncate">{incident.pod}</p>
                 </div>
             </div>
 

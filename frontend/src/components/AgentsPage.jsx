@@ -89,14 +89,14 @@ const AgentsPage = memo(({ clusters = [], incidents = [], prs = [] }) => {
     };
 
     return (
-        <div className="p-10 flex flex-col gap-10">
+        <div className="p-8 h-full flex flex-col gap-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-4xl font-black text-slate-800 tracking-tight">Agents</h1>
-                    <p className="text-slate-500 font-medium mt-1">Autonomous monitoring & remediation units</p>
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">Agents</h1>
+                    <p className="text-slate-500 font-medium text-sm mt-1">Autonomous monitoring & remediation units</p>
                 </div>
                 <div className="flex gap-4">
-                    <button className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all">
+                    <button className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all">
                         Deploy New Agent
                     </button>
                 </div>

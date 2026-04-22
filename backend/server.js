@@ -50,8 +50,43 @@ let clusters = [
   }
 ];
 
-let incidents = [];
-let prs = [];
+let incidents = [
+  {
+    id: "inc-initial-1",
+    cluster: "prod-us-east-1",
+    clusterId: "cluster-1",
+    namespace: "monitoring",
+    pod: "prometheus-1",
+    podId: "p4",
+    timestamp: new Date().toISOString(),
+    severity: "Critical",
+    rootCause: "Memory limit too low (512Mi) — container OOMKilled",
+    triggerLog: `${new Date().toISOString()} [CRITICAL] prometheus-1: OOMKilled - container memory limit exceeded`,
+    logs: [
+        `${new Date().toISOString()} [INFO] prometheus-1: Health check passed`,
+        `${new Date().toISOString()} [WARN] prometheus-1: Memory usage at 95% of limit`,
+        `${new Date().toISOString()} [CRITICAL] prometheus-1: OOMKilled - container memory limit exceeded`
+    ],
+  }
+];
+let prs = [
+  {
+    id: "pr-initial-1",
+    title: "Fix OOM: Increase memory for prometheus-1 from 512Mi → 1Gi",
+    status: "PR Ready",
+    pod: "prometheus-1",
+    cluster: "prod-us-east-1",
+    savings: "42% risk reduction",
+  },
+  {
+    id: "pr-initial-2",
+    title: "Optimization: Scale down idle-worker in staging",
+    status: "Merged",
+    pod: "idle-worker-5k",
+    cluster: "staging-eu-west-1",
+    savings: "$120/mo saved",
+  }
+];
 
 // ─── Log templates by severity ───────────────────────────────────────────────
 const LOG_TEMPLATES = {
