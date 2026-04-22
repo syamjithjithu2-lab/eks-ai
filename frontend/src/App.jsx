@@ -188,13 +188,13 @@ export default function App() {
                             <p className="text-slate-500 font-medium text-sm mt-1">Real-time root cause detection & remediation</p>
                         </div>
                         <div className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0">
-                            <div className="w-full lg:w-[40%] h-[45%] lg:h-full">
+                            <div className="w-full lg:w-[35%] h-[40%] lg:h-full">
                                 <IncidentList
                                     incidents={incidents}
                                     onSelect={setSelectedIncident}
                                 />
                             </div>
-                            <div className="w-full lg:w-[60%] h-[55%] lg:h-full">
+                            <div className="w-full lg:w-[65%] h-[60%] lg:h-full">
                                 <IncidentAnalysis 
                                     incident={selectedIncident} 
                                     onUpdateLogs={handleUpdateIncidentLogs}
@@ -227,8 +227,8 @@ export default function App() {
     };
 
     return (
-        <div className="flex h-screen text-slate-900 overflow-hidden relative">
-            <div className="light-mesh" />
+        <div className="flex h-screen h-[100dvh] text-slate-900 overflow-hidden relative">
+            <div className="light-mesh pointer-events-none" />
 
             <Sidebar
                 activePage={activePage}
@@ -255,7 +255,7 @@ export default function App() {
                     onMenuClick={() => setSidebarOpen(true)}
                 />
 
-                <div className="flex-1 min-h-0 flex flex-col overflow-y-auto custom-scrollbar">
+                <div className="flex-1 min-h-0 flex flex-col overflow-y-auto custom-scrollbar bg-transparent">
                     {renderPage()}
                 </div>
             </div>
