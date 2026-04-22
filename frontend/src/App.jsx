@@ -54,8 +54,24 @@ export default function App() {
             });
         });
 
-        socket.on('incident', (inc) => setIncidents(prev => [inc, ...prev]));
-        socket.on('pr-update', (pr) => setPrs(prev => [pr, ...prev]));
+        socket.on('incident', (inc) => {
+            setIncidents(prev => {
+                const existing = prev.findIndex(p => p.id === inc.id);
+                if (existing !== -1) {
+                    const next = [...prev];
+                    next[existing] = inc;
+                    return next;
+                }
+                return [inc, ...prev];
+            });
+        });
+
+        socket.on('pr-update', (pr) => {
+            setPrs(prev => {
+                if (prev.find(p => p.id === pr.id)) return prev;
+                return [pr, ...prev];
+            });
+        });
 
         return () => { socket.removeAllListeners(); socket.disconnect(); };
     }, []);
@@ -209,7 +225,7 @@ export default function App() {
                     isConnected={isConnected}
                 />
 
-                <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                <div className="flex-1 min-h-0 flex flex-col overflow-y-auto custom-scrollbar">
                     {renderPage()}
                 </div>
             </div>

@@ -252,7 +252,7 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
                         </div>
 
                         {/* Answer */}
-                        <p className="text-[10px] sm:text-[11px] text-slate-700 leading-relaxed font-medium mb-2">
+                        <p className="text-[10px] sm:text-[11px] text-slate-700 leading-relaxed font-medium mb-2 whitespace-pre-wrap">
                             {analysisResult.answer}
                         </p>
 
