@@ -93,12 +93,35 @@ body::before {
         0 4px 6px -4px rgba(0, 0, 0, 0.05),
         inset 0 0 0 1px rgba(255, 255, 255, 0.3);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    contain: layout paint;       /* isolates repaint — big perf win */
-    content-visibility: auto;     /* skips rendering off-screen cards */
-    contain-intrinsic-size: 1px 400px;
+    contain: layout paint;
     position: relative;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+}
+
+/* Specific optimization for long lists */
+.scroll-item {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 100px;
+}
+
+.luminous-card {
+    position: relative;
+}
+
+.luminous-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.luminous-card:hover::before {
+    opacity: 1;
 }
 
 .glass-card::after {
