@@ -1,39 +1,30 @@
+import { memo } from 'react';
 import { Clock, GitPullRequest, ChevronRight, CheckCircle2 } from 'lucide-react';
 
-export default function OptimizationTimeline({ prs }) {
+const OptimizationTimeline = memo(({ prs }) => {
     return (
-        <div className="glass-card rounded-xl md:rounded-2xl lg:rounded-[3rem] p-4 md:p-6 lg:p-10 h-full">
-            <div className="flex items-center justify-between mb-4 md:mb-8 lg:mb-10">
-                <div className="flex items-center gap-2 md:gap-4">
-                    <div className="w-8 h-8 md:w-12 md:h-12 bg-indigo-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100">
-                        <Clock size={16} className="text-white md:hidden" />
-                        <Clock size={24} className="text-white hidden md:block" />
-                    </div>
-                    <div>
-                        <h3 className="text-base md:text-xl lg:text-2xl font-black text-slate-800 tracking-tight leading-none">Optimization Timeline</h3>
-                        <p className="text-[0.5rem] md:text-[0.5625rem] lg:text-[0.625rem] font-black text-slate-500 uppercase tracking-widest mt-1 flex items-center gap-1.5">
-                             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping"></span>
-                             Real-time Analysis active
-                        </p>
-                    </div>
-                </div>
-                <span className="text-[0.5625rem] md:text-[0.625rem] font-black bg-slate-50 border border-slate-100 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-slate-400 uppercase tracking-widest">
-                    Last 30m
-                </span>
+        <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 md:p-8 lg:p-10 h-full flex flex-col relative overflow-hidden group">
+            <div className="absolute top-0 left-0 p-8 opacity-5 group-hover:rotate-12 transition-transform duration-700">
+                <Clock size={100} className="text-indigo-600" />
             </div>
 
-            <div className="space-y-2 md:space-y-4 overflow-auto pr-2 md:pr-4 custom-scrollbar" style={{ maxHeight: 'clamp(12.5rem, 35vh, 26.25rem)' }}>
-                {prs.length > 0 ? (
-                    prs.map((pr, i) => (
-                        <div key={i} 
-                            onClick={() => window.dispatchEvent(new CustomEvent('nav-change', { detail: 'prs' }))}
-                            className="flex gap-3 md:gap-5 bg-white/40 border border-slate-100 rounded-xl md:rounded-[2rem] p-3 md:p-6 hover:bg-white hover:shadow-xl hover:shadow-emerald-50/50 transition-all duration-300 group relative luminous-card cursor-pointer"
-                        >
-                            <div className="w-10 h-10 md:w-14 md:h-14 bg-emerald-50 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0 border border-emerald-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                                <GitPullRequest size={18} className="text-emerald-500 md:hidden" />
-                                <GitPullRequest size={28} className="text-emerald-500 hidden md:block" />
-                            </div>
-                            
+            <div className="flex items-center justify-between mb-8 md:mb-12 relative z-10">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100">
+                        <GitPullRequest className="text-indigo-600" size={18} />
+                    </div>
+                    <div>
+                        <h3 className="text-sm md:text-base font-black text-slate-800 tracking-tight">Optimization Timeline</h3>
+                        <p className="text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Fleet Remediation</p>
+                    </div>
+                </div>
+                <ChevronRight className="text-slate-300" size={20} />
+            </div>
+
+            <div className="space-y-4 md:space-y-6 flex-1 overflow-auto pr-2 custom-scrollbar relative z-10">
+                {prs && prs.length > 0 ? (
+                    prs.slice(0, 3).map((pr, i) => (
+                        <div key={i} className="flex items-center justify-between gap-4 p-4 md:p-6 bg-white/60 border border-white/80 rounded-2xl md:rounded-[2rem] hover:bg-white transition-all duration-300 group shadow-sm/50">
                             <div className="flex-1 min-w-0 flex flex-col justify-center">
                                 <div className="flex items-center gap-2 mb-1.5">
                                     <span className="text-[0.5rem] md:text-[0.5625rem] font-black px-2 py-0.5 bg-emerald-600 text-white rounded-md uppercase tracking-widest shadow-sm">
@@ -71,4 +62,6 @@ export default function OptimizationTimeline({ prs }) {
             </div>
         </div>
     );
-}
+});
+
+export default OptimizationTimeline;

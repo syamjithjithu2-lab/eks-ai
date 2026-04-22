@@ -1,7 +1,7 @@
 import { GitPullRequest, Search, CheckCircle2, XCircle, Code2, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-export default function PRHub({ prs = [] }) {
+const PRHub = memo(({ prs = [] }) => {
     const [search, setSearch] = useState('');
     
     const filteredPrs = prs.filter(pr => 
@@ -102,4 +102,6 @@ export default function PRHub({ prs = [] }) {
             </div>
         </div>
     );
-}
+});
+
+export default PRHub;

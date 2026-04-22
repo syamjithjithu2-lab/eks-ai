@@ -1,10 +1,12 @@
+import { memo } from 'react';
+
 const SEVERITY_STYLES = {
     Critical: 'bg-rose-100 text-rose-600 border-rose-200',
     Warning:  'bg-amber-100 text-amber-600 border-amber-200',
     Info:     'bg-indigo-100 text-indigo-600 border-indigo-200',
 };
 
-export default function IncidentList({ incidents, onSelect }) {
+const IncidentList = memo(({ incidents, onSelect }) => {
     return (
         <div className="glass-card rounded-2xl p-3 sm:p-4 lg:p-5 h-full overflow-hidden flex flex-col">
             <div className="flex items-center justify-between mb-3 sm:mb-4 flex-shrink-0">
@@ -58,4 +60,6 @@ export default function IncidentList({ incidents, onSelect }) {
             </div>
         </div>
     );
-}
+});
+
+export default IncidentList;

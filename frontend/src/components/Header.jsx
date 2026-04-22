@@ -1,13 +1,14 @@
+import { memo } from 'react';
 import { User } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 
-export default function Header({
+const Header = memo(({
     clusters,
     selectedCluster, setSelectedCluster,
     selectedNamespace, setSelectedNamespace,
     selectedPod, setSelectedPod,
     isConnected
-}) {
+}) => {
     return (
         <div className="h-14 md:h-16 lg:h-20 glass-header flex items-center justify-between px-3 md:px-6 lg:px-10 z-40">
             <div className="flex items-center gap-1.5 md:gap-3">
@@ -103,4 +104,6 @@ export default function Header({
             </div>
         </div>
     );
-}
+});
+
+export default Header;

@@ -1,7 +1,8 @@
+import { useState, useMemo, memo } from 'react';
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell, Tooltip, CartesianGrid } from 'recharts';
 import { Activity, Database, Cpu, TrendingUp } from 'lucide-react';
 
-export default function MetricsBar({ filteredClusters, selectedCluster, selectedNamespace, selectedPod }) {
+const MetricsBar = memo(({ filteredClusters, selectedCluster, selectedNamespace, selectedPod }) => {
     const allPods = filteredClusters?.flatMap(c => c.namespaces.flatMap(ns => ns.pods)) || [];
     const totalPods = allPods.length || 1;
 
@@ -10,44 +11,48 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
     const memoryPressure = Math.min(Math.round(memoryAvg / 15), 100);
 
     const colors = ['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'];
-    let healthData = [];
-    let chartTitle = "Cluster Health";
-    let chartEntityCount = "";
+    
+    const { healthData, chartTitle, chartEntityCount } = useMemo(() => {
+        let hData = [];
+        let cTitle = "Cluster Health";
+        let cCount = "";
 
-    if (selectedPod) {
-        chartTitle = "Pod Detail";
-        chartEntityCount = "1 Pod";
-        healthData = allPods.map((p, i) => ({
-            name: p.name.split('-').slice(0, 2).join('-'),
-            cpu: p.cpu,
-            color: p.status === 'Critical' ? '#f43f5e' : p.status === 'Warning' ? '#f59e0b' : colors[0]
-        }));
-    } else if (selectedNamespace) {
-        chartTitle = "Namespace CPU";
-        chartEntityCount = `${allPods.length} Pods`;
-        healthData = allPods.map((p, i) => ({
-            name: p.name.split('-').slice(0, 2).join('-'),
-            cpu: p.cpu,
-            color: p.status === 'Critical' ? '#f43f5e' : p.status === 'Warning' ? '#f59e0b' : colors[i % colors.length]
-        }));
-    } else if (selectedCluster && filteredClusters.length > 0) {
-        chartTitle = "Namespaces Overview";
-        const nss = filteredClusters[0].namespaces;
-        chartEntityCount = `${nss.length} Namespaces`;
-        healthData = nss.map((ns, i) => {
-            const nsPods = ns.pods;
-            const nsCpu = nsPods.length ? Math.round(nsPods.reduce((s, p) => s + p.cpu, 0) / nsPods.length) : 0;
-            return { name: ns.name, cpu: nsCpu, color: colors[i % colors.length] };
-        });
-    } else if (filteredClusters) {
-        chartTitle = "Cluster Health";
-        chartEntityCount = `${filteredClusters.length} Clusters`;
-        healthData = filteredClusters.map((c, i) => {
-            const cPods = c.namespaces.flatMap(ns => ns.pods);
-            const cCpu = cPods.length ? Math.round(cPods.reduce((s, p) => s + p.cpu, 0) / cPods.length) : 0;
-            return { name: c.name.split('-')[0], cpu: cCpu, color: colors[i % colors.length] };
-        });
-    }
+        if (selectedPod) {
+            cTitle = "Pod Detail";
+            cCount = "1 Pod";
+            hData = allPods.map((p, i) => ({
+                name: p.name.split('-').slice(0, 2).join('-'),
+                cpu: p.cpu,
+                color: p.status === 'Critical' ? '#f43f5e' : p.status === 'Warning' ? '#f59e0b' : colors[0]
+            }));
+        } else if (selectedNamespace) {
+            cTitle = "Namespace CPU";
+            cCount = `${allPods.length} Pods`;
+            hData = allPods.map((p, i) => ({
+                name: p.name.split('-').slice(0, 2).join('-'),
+                cpu: p.cpu,
+                color: p.status === 'Critical' ? '#f43f5e' : p.status === 'Warning' ? '#f59e0b' : colors[i % colors.length]
+            }));
+        } else if (selectedCluster && filteredClusters.length > 0) {
+            cTitle = "Namespaces Overview";
+            const nss = filteredClusters[0].namespaces;
+            cCount = `${nss.length} Namespaces`;
+            hData = nss.map((ns, i) => {
+                const nsPods = ns.pods;
+                const nsCpu = nsPods.length ? Math.round(nsPods.reduce((s, p) => s + p.cpu, 0) / nsPods.length) : 0;
+                return { name: ns.name, cpu: nsCpu, color: colors[i % colors.length] };
+            });
+        } else if (filteredClusters) {
+            cTitle = "Cluster Health";
+            cCount = `${filteredClusters.length} Clusters`;
+            hData = filteredClusters.map((c, i) => {
+                const cPods = c.namespaces.flatMap(ns => ns.pods);
+                const cCpu = cPods.length ? Math.round(cPods.reduce((s, p) => s + p.cpu, 0) / cPods.length) : 0;
+                return { name: c.name.split('-')[0], cpu: cCpu, color: colors[i % colors.length] };
+            });
+        }
+        return { healthData: hData, chartTitle: cTitle, chartEntityCount: cCount };
+    }, [filteredClusters, selectedCluster, selectedNamespace, selectedPod]);
 
     return (
         <div className="grid grid-cols-12 grid-responsive-3 gap-4 md:gap-6 lg:gap-8">
@@ -98,7 +103,7 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             {/* Chart Overview */}
             <div className="col-span-4 glass-card rounded-2xl md:rounded-[2rem] lg:rounded-[3rem] p-4 md:p-6 lg:p-8 group flex flex-col">
                 <div className="flex justify-between items-start mb-4 md:mb-8">
-                    <div>
+                    <div className="flex-1">
                         <p className="text-[0.5625rem] md:text-[0.625rem] font-black text-slate-800 uppercase tracking-[0.2em] mb-1">{chartTitle}</p>
                         <p className="text-[0.5625rem] md:text-xs font-bold text-indigo-500 uppercase tracking-widest">{chartEntityCount}</p>
                     </div>
@@ -107,8 +112,8 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
                     </div>
                 </div>
 
-                <div className="flex-1 flex flex-col justify-end">
-                    <ResponsiveContainer width="100%" height={100}>
+                <div className="flex-1 min-h-[8rem] flex flex-col justify-end">
+                    <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={healthData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
@@ -148,7 +153,7 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
                                 dataKey="cpu" 
                                 radius={[6, 6, 0, 0]} 
                                 barSize={20}
-                                animationDuration={1500}
+                                animationDuration={1000}
                                 animationEasing="ease-out"
                             >
                                 {healthData.map((entry, index) => (
@@ -172,4 +177,6 @@ export default function MetricsBar({ filteredClusters, selectedCluster, selected
             </div>
         </div>
     );
-}
+});
+
+export default MetricsBar;

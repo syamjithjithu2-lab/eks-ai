@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { DollarSign, TrendingDown, Target, Wallet, ArrowUpRight, BarChart4 } from 'lucide-react';
 
-export default function CostPage({ prs }) {
+const CostPage = memo(({ prs }) => {
     const savings = [
         { category: "Unused Volumes", amount: "$420", potential: "High" },
         { category: "Overprovisioned Pods", amount: "$864", potential: "Critical" },
@@ -109,4 +110,6 @@ export default function CostPage({ prs }) {
             </div>
         </div>
     );
-}
+});
+
+export default CostPage;

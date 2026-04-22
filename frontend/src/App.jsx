@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import io from 'socket.io-client';
 import { Activity } from 'lucide-react';
 
@@ -47,11 +47,20 @@ export default function App() {
             setClusters(data);
         });
 
+        const logBuffer = [];
+        const flushLogs = () => {
+            if (logBuffer.length > 0) {
+                setLogStream(prev => {
+                    const next = [...prev, ...logBuffer];
+                    logBuffer.length = 0;
+                    return next.length > 300 ? next.slice(-300) : next;
+                });
+            }
+        };
+        const logTimer = setInterval(flushLogs, 200); // Flush logs every 200ms
+
         socket.on('log-stream', (entry) => {
-            setLogStream(prev => {
-                const next = [...prev, entry];
-                return next.length > 500 ? next.slice(-500) : next;
-            });
+            logBuffer.push(entry);
         });
 
         socket.on('incident', (inc) => {
@@ -73,7 +82,11 @@ export default function App() {
             });
         });
 
-        return () => { socket.removeAllListeners(); socket.disconnect(); };
+        return () => { 
+            socket.removeAllListeners(); 
+            socket.disconnect(); 
+            clearInterval(logTimer);
+        };
     }, []);
 
     const handleUpdateIncidentLogs = (incidentId, newLogs) => {

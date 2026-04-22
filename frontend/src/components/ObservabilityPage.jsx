@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { Search, Play, Pause, Filter, AlertTriangle, Info, AlertCircle, Zap, Activity } from 'lucide-react';
 import CustomDropdown from './CustomDropdown';
 
@@ -11,7 +11,7 @@ const LEVEL_CONFIG = {
 
 const LEVELS = ['ALL', 'INFO', 'WARN', 'ERROR', 'CRITICAL'];
 
-export default function ObservabilityPage({ logStream = [], clusters = [], selectedCluster, selectedNamespace, selectedPod }) {
+const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster, selectedNamespace, selectedPod }) => {
     const [levelFilter, setLevelFilter] = useState('ALL');
     const [search, setSearch]           = useState('');
     const [autoScroll, setAutoScroll]   = useState(true);
@@ -166,4 +166,6 @@ export default function ObservabilityPage({ logStream = [], clusters = [], selec
             </div>
         </div>
     );
-}
+});
+
+export default ObservabilityPage;

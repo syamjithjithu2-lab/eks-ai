@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Zap, Shield, Eye, DollarSign, Activity } from 'lucide-react';
 
 const CARD_DATA = [
@@ -8,7 +9,7 @@ const CARD_DATA = [
     { title: "Cost Optimization", value: "$2.4k", status: "Saving", color: "emerald", icon: DollarSign },
 ];
 
-export default function SummaryCards() {
+const SummaryCards = memo(() => {
     return (
         <div className="grid grid-cols-5 grid-responsive-5 gap-3 md:gap-4 lg:gap-6">
             {CARD_DATA.map((card, i) => (
@@ -30,4 +31,6 @@ export default function SummaryCards() {
             ))}
         </div>
     );
-}
+});
+
+export default SummaryCards;

@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { Activity, Users, AlertTriangle, Shield, BarChart3, DollarSign, Command, Sparkles, GitPullRequest } from 'lucide-react';
 
-export default function Sidebar({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected }) {
+const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected }) => {
     const menuItems = [
         { id: 'overview', icon: Activity, label: "Overview" },
         { id: 'agents', icon: Users, label: "Agents" },
@@ -105,4 +106,6 @@ export default function Sidebar({ activePage, setActivePage, filteredClusters, s
             </div>
         </aside>
     );
-}
+});
+
+export default Sidebar;

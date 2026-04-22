@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { AlertTriangle, Server, Clock, FileText, Zap, Activity, Edit3, Save, X, Sparkles, ChevronRight, Loader2, CheckCircle2, LightbulbIcon } from 'lucide-react';
 
 const SEVERITY_STYLES = {
@@ -63,7 +63,7 @@ function ConfirmModal({ onEditFirst, onAnalyzeNow, onDismiss }) {
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
-export default function IncidentAnalysis({ incident, onUpdateLogs }) {
+const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [localLogs, setLocalLogs] = useState('');
     const [showConfirm, setShowConfirm] = useState(false);
@@ -336,4 +336,6 @@ export default function IncidentAnalysis({ incident, onUpdateLogs }) {
             </div>
         </div>
     );
-}
+});
+
+export default IncidentAnalysis;

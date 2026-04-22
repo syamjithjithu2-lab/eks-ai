@@ -1,7 +1,7 @@
 import { Users, Shield, Zap, MessageSquare, Send, Sparkles } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 
-export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) {
+const AgentsPage = memo(({ clusters = [], incidents = [], prs = [] }) => {
     const [messages, setMessages] = useState([
         { 
             role: 'ai', 
@@ -227,4 +227,6 @@ export default function AgentsPage({ clusters = [], incidents = [], prs = [] }) 
             </div>
         </div>
     );
-}
+});
+
+export default AgentsPage;

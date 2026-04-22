@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { Shield, Lock, Bell, CheckCircle, ShieldAlert, FileSearch } from 'lucide-react';
 
-export default function SecurityPage() {
+const SecurityPage = memo(() => {
     const findings = [
         { title: "Privileged Container Detection", severity: "Low", status: "Resolved", cluster: "prod-us-east-1" },
         { title: "Root User Access Attempt", severity: "High", status: "Blocked", cluster: "staging-eu-west-1" },
@@ -75,4 +76,6 @@ export default function SecurityPage() {
             </div>
         </div>
     );
-}
+});
+
+export default SecurityPage;
