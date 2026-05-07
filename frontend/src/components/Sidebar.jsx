@@ -1,147 +1,118 @@
 import { memo } from 'react';
-import { Activity, Users, AlertTriangle, Shield, BarChart3, DollarSign, Command, Sparkles, GitPullRequest, X } from 'lucide-react';
+import { Activity, Users, AlertTriangle, Shield, BarChart3, DollarSign, Command, Sparkles, GitPullRequest, X, ChevronsLeft, ChevronsRight, Settings } from 'lucide-react';
 
-const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected, isOpen, onClose }) => {
+const Sidebar = memo(({ activePage, setActivePage, filteredClusters, selectedCluster, selectedNamespace, selectedPod, isConnected, isCollapsed = false, onToggleCollapse, isOpen, onClose }) => {
     const menuItems = [
         { id: 'overview', icon: Activity, label: "Overview" },
-        { id: 'agents', icon: Users, label: "Agents" },
-        { id: 'incidents', icon: AlertTriangle, label: "Incidents" },
+        { id: 'agents', icon: Users, label: "Agents", badge: { text: 'HUB', color: 'indigo' } },
+        { id: 'incidents', icon: AlertTriangle, label: "Incidents", badge: { text: 'LIVE', color: 'rose' }, aiBadge: true },
         { id: 'security', icon: Shield, label: "Security" },
         { id: 'observability', icon: BarChart3, label: "Observability" },
-        { id: 'cost', icon: DollarSign, label: "Cost" },
-        { id: 'prs', icon: GitPullRequest, label: "Pull Requests" },
+        { id: 'cost', icon: DollarSign, label: "Cost", aiBadge: true },
+        { id: 'prs', icon: GitPullRequest, label: "Pull Requests", badge: { text: 'NEW', color: 'emerald' } },
     ];
 
-    let statusColor = "text-slate-400";
-    let titleText = isConnected ? "Analyzing..." : "Disconnected";
-    let subTitle = isConnected ? "System heartbeat active" : "Check network link";
-
-    if (filteredClusters && filteredClusters.length > 0) {
+    // Status Logic 
+    let statusTheme = { color: "text-slate-400", bg: "bg-slate-400", label: isConnected ? "Analyzing..." : "Disconnected" };
+    if (filteredClusters?.length > 0) {
         const allPods = filteredClusters.flatMap(c => c.namespaces.flatMap(ns => ns.pods));
-        const hasCritical = allPods.some(p => p.status === "Critical");
-        const hasWarning = allPods.some(p => p.status === "Warning");
-
-        if (hasCritical) {
-            statusColor = "text-rose-500";
-            titleText = "CRITICAL BREACH";
-        } else if (hasWarning) {
-            statusColor = "text-amber-500";
-            titleText = "ANOMALIES DETECTED";
+        if (allPods.some(p => p.status === "Critical")) {
+            statusTheme = { color: "text-rose-500", bg: "bg-rose-500", label: "CRITICAL" };
+        } else if (allPods.some(p => p.status === "Warning")) {
+            statusTheme = { color: "text-amber-500", bg: "bg-amber-500", label: "ANOMALY" };
         } else {
-            statusColor = "text-emerald-500";
-            titleText = "OPERATIONAL";
-        }
-
-        if (selectedPod) {
-             subTitle = `Pod: ${selectedPod.name.substring(0, 16)}...`;
-        } else if (selectedNamespace) {
-             subTitle = `${allPods.length} pods in ${selectedNamespace.name}`;
-        } else if (selectedCluster) {
-             subTitle = `${filteredClusters[0].namespaces.length} namespaces online`;
-        } else {
-             subTitle = `${filteredClusters.length} clusters healthy`;
+            statusTheme = { color: "text-emerald-500", bg: "bg-emerald-500", label: "STABLE" };
         }
     }
 
-    const handleNavClick = (id) => {
-        setActivePage(id);
-        if (onClose) onClose(); // close mobile sidebar on nav
-    };
-
     const sidebarContent = (
-        <aside className="w-[clamp(14rem,18vw,20rem)] flex-shrink-0 glass-sidebar flex flex-col z-10 box-border p-8 sidebar-compact-padding h-full">
-            <div className="flex items-center gap-4 mb-16 sidebar-compact-mb px-2">
-                <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-100 ring-4 ring-white">
-                    <Command className="text-white" size={28} />
+        <aside
+            className={`flex-shrink-0 flex flex-col transition-all duration-500 ease-in-out border-r border-white/20 bg-white/70 backdrop-blur-xl relative z-20 h-full overflow-hidden
+            ${isCollapsed ? 'w-24' : 'w-72'}`}
+        >
+            {/* Logo Section */}
+            <div className="p-6 mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 ring-2 ring-indigo-50 transition-transform hover:rotate-12">
+                        <Command className="text-white" size={22} />
+                    </div>
+                    {!isCollapsed && (
+                        <div className="flex flex-col">
+                            <span className="text-sm font-black text-slate-800 tracking-tight leading-none">EKS.AI</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">v2.4.0</span>
+                        </div>
+                    )}
                 </div>
-                <div className="flex-1 min-w-0">
-                    <h2 className="text-[1.125rem] font-black text-slate-800 tracking-tighter leading-none">EKS AI</h2>
-                    <p className="text-[0.625rem] font-black text-slate-600 uppercase tracking-[0.2em] mt-1">Platform Core</p>
-                </div>
-                {/* Mobile close button */}
-                {onClose && (
-                    <button
-                        onClick={onClose}
-                        className="lg:hidden w-8 h-8 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors flex-shrink-0"
-                        aria-label="Close sidebar"
-                    >
-                        <X size={18} className="text-slate-500" />
-                    </button>
-                )}
+                <button onClick={onToggleCollapse} className="hidden lg:flex p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
+                    {isCollapsed ? <ChevronsRight size={18} /> : <ChevronsLeft size={18} />}
+                </button>
             </div>
 
-            <nav className="space-y-3 flex-1 px-1 overflow-y-auto custom-scrollbar pr-2 h-0 min-h-0">
-                <p className="text-[0.625rem] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 px-3">Command Center</p>
-                {menuItems.map((item) => (
-                    <div
-                        key={item.id}
-                        onClick={() => handleNavClick(item.id)}
-                        className={`flex items-center gap-4 px-5 py-4 rounded-[1.5rem] cursor-pointer transition-all duration-500 group relative ${activePage === item.id
-                                ? 'bg-indigo-600 text-white shadow-2xl shadow-indigo-200 -translate-y-1 scale-[1.02]'
-                                : 'hover:bg-indigo-50 text-slate-500 hover:text-indigo-600'
-                            }`}
-                    >
-                        {activePage === item.id && (
-                            <div className="absolute -left-1 w-1 h-6 bg-indigo-400 rounded-full blur-sm"></div>
-                        )}
-                        <item.icon size={20} className={activePage === item.id ? 'text-white' : 'group-hover:scale-125 transition-transform duration-500'} />
-                        <span className="font-black text-sm tracking-tight">{item.label}</span>
-                        {item.id === 'incidents' && (
-                            <span className={`ml-auto text-[0.5rem] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-rose-500 text-white shadow-lg shadow-rose-100'}`}>LIVE</span>
-                        )}
-                        {item.id === 'prs' && (
-                             <span className={`ml-auto text-[0.5rem] px-2 py-1 rounded-md font-black tracking-widest ${activePage === item.id ? 'bg-white/20 text-white' : 'bg-emerald-500 text-white shadow-lg shadow-emerald-100'}`}>NEW</span>
-                        )}
-                    </div>
-                ))}
+            {/* Navigation */}
+            <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto no-scrollbar">
+                {!isCollapsed && <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] px-4 mb-4">Command Center</p>}
+                {menuItems.map((item) => {
+                    const isActive = activePage === item.id;
+                    const Icon = item.icon;
+                    return (
+                        <button
+                            key={item.id}
+                            onClick={() => setActivePage(item.id)}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 relative
+                                ${isActive ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-100' : 'text-slate-500 hover:bg-indigo-50/50 hover:text-indigo-600'}`}
+                        >
+                            <Icon size={20} strokeWidth={isActive ? 2.5 : 2} className={`transition-transform duration-300 ${isActive ? '' : 'group-hover:scale-110'}`} />
+                            {!isCollapsed && <span className="font-bold text-[13px] tracking-tight truncate flex-1 text-left">{item.label}</span>}
+
+                            {!isCollapsed && (item.badge || item.aiBadge) && (
+                                <div className="flex items-center gap-1">
+                                    {item.aiBadge && <Sparkles size={10} className={`${isActive ? 'text-indigo-200' : 'text-indigo-500'} animate-pulse`} />}
+                                    {item.badge && (
+                                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/20' : 'bg-slate-100 text-slate-500'}`}>
+                                            {item.badge.text}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </button>
+                    );
+                })}
             </nav>
 
-            <div className="mt-auto space-y-6">
-                <div className="glass-card bg-white/40 border-white/60 rounded-[2.5rem] p-6 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-150 transition-transform duration-700">
-                        <Sparkles size={60} className="text-indigo-600" />
-                    </div>
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className={`w-3 h-3 rounded-full relative ${statusColor.includes('rose') ? 'bg-rose-500' : statusColor.includes('amber') ? 'bg-amber-500' : 'bg-emerald-500'}`}>
-                            <div className={`absolute inset-0 rounded-full animate-ping opacity-40 ${statusColor.includes('rose') ? 'bg-rose-500' : statusColor.includes('amber') ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
+            {/* Status Card Footer */}
+            <div className="p-4 mt-auto">
+                <div className={`rounded-3xl p-4 transition-all duration-500 ${isCollapsed ? 'bg-transparent' : 'bg-slate-50 border border-slate-100'}`}>
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className={`w-2.5 h-2.5 rounded-full ${statusTheme.bg}`} />
+                            <div className={`absolute inset-0 rounded-full ${statusTheme.bg} animate-ping opacity-40`} />
                         </div>
-                        <p className={`text-[0.625rem] font-black uppercase tracking-[0.2em] ${statusColor}`}>{titleText}</p>
+                        {!isCollapsed && (
+                            <div className="min-w-0">
+                                <p className={`text-[10px] font-black uppercase tracking-tighter ${statusTheme.color}`}>{statusTheme.label}</p>
+                                <p className="text-[11px] font-bold text-slate-800 truncate">System Heartbeat</p>
+                            </div>
+                        )}
                     </div>
-                    <p className="text-slate-800 font-black tracking-tight text-sm mb-1">{subTitle}</p>
-                    <p className="text-slate-500 text-[0.625rem] font-bold uppercase tracking-widest">Global Status</p>
                 </div>
 
-                <div className="flex items-center justify-between p-6 border-t border-slate-100">
-                    <p className="text-[0.625rem] font-black text-slate-500 tracking-widest uppercase">V2.4.0 CLOUD</p>
-                    <div className="flex gap-2">
-                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
-                        <div className="w-1.5 h-1.5 bg-slate-200 rounded-full"></div>
-                    </div>
-                </div>
+                {!isCollapsed && (
+                    <button className="w-full mt-4 flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all">
+                        <Settings size={18} />
+                        <span className="text-[13px] font-bold">Preferences</span>
+                    </button>
+                )}
             </div>
         </aside>
     );
 
     return (
         <>
-            {/* Desktop: always-visible sidebar */}
-            <div className="hidden lg:flex h-full">
+            <div className="hidden lg:flex h-full">{sidebarContent}</div>
+            <div className={`lg:hidden fixed inset-0 z-50 transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {sidebarContent}
+                <div onClick={onClose} className="absolute inset-0 -z-10 bg-slate-900/20 backdrop-blur-sm" />
             </div>
-
-            {/* Mobile: slide-in overlay sidebar */}
-            <div className={`lg:hidden sidebar-mobile ${isOpen ? 'open' : ''}`}>
-                {sidebarContent}
-            </div>
-
-            {/* Mobile backdrop */}
-            {isOpen && (
-                <div
-                    className="lg:hidden sidebar-overlay"
-                    onClick={onClose}
-                    aria-hidden="true"
-                />
-            )}
         </>
     );
 });

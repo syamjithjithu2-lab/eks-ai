@@ -5,8 +5,18 @@ import cors from 'cors';
 import 'dotenv/config';
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
 app.use(express.json());
+
+// ─── Simple per-IP rate limiter (5s cooldown per AI endpoint) ─────────────────
+const rateMap = new Map();
+const checkRateLimit = (key, cooldownMs = 5000) => {
+  const now = Date.now();
+  const last = rateMap.get(key) || 0;
+  if (now - last < cooldownMs) return false;
+  rateMap.set(key, now);
+  return true;
+};
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -283,7 +293,91 @@ app.get('/logs/:podId', (req, res) => {
   res.status(404).json({ error: 'Pod not found' });
 });
 
+app.post('/cost-optimize', async (req, res) => {
+  const ip = req.ip || 'default';
+  if (!checkRateLimit(`cost:${ip}`, 5000)) {
+    return res.status(429).json({ answer: 'Please wait a few seconds before running the Cost Optimizer again.', suggestions: [] });
+  }
+  const { pods = [] } = req.body;
+  const BEDROCK_API_URL = process.env.BEDROCK_API_URL;
+
+  if (!BEDROCK_API_URL) {
+    return res.status(500).json({
+      answer: "BEDROCK_API_URL environment variable is missing.",
+      suggestions: []
+    });
+  }
+
+  if (!pods.length) {
+    return res.status(400).json({ answer: "No pod data provided.", suggestions: [] });
+  }
+
+  // Build a structured cost-optimization prompt as a fake "log stream"
+  const podSummaryLines = pods.map(p =>
+    `[POD] name=${p.name} cluster=${p.cluster} namespace=${p.namespace} cpu=${p.cpu}% memory=${p.memory}MB status=${p.status}`
+  );
+
+  const promptLogs = [
+    `[COST-OPTIMIZER] Analyzing ${pods.length} pods across clusters for resource efficiency.`,
+    `[COST-OPTIMIZER] Pricing basis: ~$0.048/vCPU-hr, ~$0.006/GB-hr (EKS t3.medium on-demand).`,
+    `[COST-OPTIMIZER] Under-utilized threshold: CPU < 30% AND Memory < 40% of typical 1vCPU/2GB pod.`,
+    `[COST-OPTIMIZER] Over-utilized threshold: CPU > 85% OR Memory > 1400MB.`,
+    ...podSummaryLines,
+    `[COST-OPTIMIZER] For each pod: classify as Under-utilized / Optimal / Over-utilized, suggest new resource requests/limits, and estimate monthly cost delta in USD.`,
+    `[COST-OPTIMIZER] Finally, provide a TOTAL PROJECTED MONTHLY SAVINGS or INCREASE across all pods.`,
+  ];
+
+  const fakeIncident = {
+    id: "cost-optimizer-run",
+    pod: "all-pods",
+    cluster: pods[0]?.cluster || "all-clusters",
+    namespace: "all-namespaces",
+    severity: "Cost Analysis",
+    context: "You are a Kubernetes cost optimization AI. Analyze the pod metrics provided. For each pod, output: Classification (Under-utilized/Optimal/Over-utilized), Recommended Action (scale down/scale up/no change), Resource change (e.g. cpu: 500m→250m, memory: 512Mi→256Mi), Estimated monthly cost delta (e.g. -$12.40/mo or +$8.20/mo). End with a clear TOTAL PROJECTED MONTHLY CHANGE. Format output with clear sections per pod and a summary at the end.",
+  };
+
+  try {
+    const response = await fetch(BEDROCK_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ logs: promptLogs, incident: fakeIncident }),
+    });
+
+    if (!response.ok) throw new Error(`API Gateway returned HTTP ${response.status}`);
+
+    const data = await response.json();
+
+    if (data.body) {
+      const rawBody = data.body;
+      try {
+        const unboxedData = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody;
+        return res.json({
+          answer: unboxedData.answer || "Cost analysis complete.",
+          suggestions: unboxedData.suggestions || []
+        });
+      } catch {
+        return res.json({
+          answer: typeof rawBody === 'string' ? rawBody : JSON.stringify(rawBody),
+          suggestions: []
+        });
+      }
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error('Cost optimizer agent error:', err);
+    res.status(500).json({
+      answer: 'Failed to reach the Cost Optimizer agent. ' + err.message,
+      suggestions: [],
+    });
+  }
+});
+
 app.post('/chat', async (req, res) => {
+  const ip = req.ip || 'default';
+  if (!checkRateLimit(`chat:${ip}`, 5000)) {
+    return res.status(429).json({ answer: 'Too many requests — please wait a moment before sending again.', suggestions: [] });
+  }
   const { logs = [], incident = {} } = req.body;
   const BEDROCK_API_URL = process.env.BEDROCK_API_URL;
 

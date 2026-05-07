@@ -1,13 +1,10 @@
 import { memo, useMemo } from 'react';
-import { Clock, GitPullRequest, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Clock, GitPullRequest, ChevronRight, CheckCircle2, ArrowRight } from 'lucide-react';
 
-const OptimizationTimeline = memo(({ prs }) => {
-    // Stable PR numbers keyed by ID — no more random flicker on re-render
+const OptimizationTimeline = memo(({ prs, setActivePage }) => {
     const prNumberMap = useMemo(() => {
         const map = new Map();
-        (prs || []).forEach((pr, i) => {
-            if (pr.id) map.set(pr.id, 100 + (i % 900));
-        });
+        (prs || []).forEach((pr, i) => { if (pr.id) map.set(pr.id, 100 + (i % 900)); });
         return map;
     }, [prs]);
 
@@ -29,7 +26,15 @@ const OptimizationTimeline = memo(({ prs }) => {
                         <p className="text-[0.625rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Fleet Remediation</p>
                     </div>
                 </div>
-                <ChevronRight className="text-slate-300" size={20} />
+                {/* View all link */}
+                {prs && prs.length > 0 && (
+                    <button
+                        onClick={() => setActivePage?.('prs')}
+                        className="flex items-center gap-1.5 text-[0.625rem] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 transition-colors group/link"
+                    >
+                        View all {prs.length} <ArrowRight size={12} className="group-hover/link:translate-x-0.5 transition-transform" />
+                    </button>
+                )}
             </div>
 
             <div className="space-y-4 md:space-y-6 flex-1 overflow-auto pr-2 custom-scrollbar relative z-10">
@@ -45,15 +50,12 @@ const OptimizationTimeline = memo(({ prs }) => {
                                 </div>
                                 <p className="font-black text-slate-800 text-base md:text-xl tracking-tight group-hover:text-emerald-600 transition-colors truncate leading-tight">{pr.title}</p>
                             </div>
-
                             <div className="flex flex-col items-end justify-center min-w-[6rem] md:min-w-[7.5rem]">
                                 <div className="flex items-center gap-2 mb-2">
                                     <CheckCircle2 size={12} className="text-emerald-500" />
                                     <span className="text-[0.625rem] font-black text-emerald-600 uppercase tracking-[0.2em]">{pr.status}</span>
                                 </div>
-                                <div className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter">
-                                    {pr.savings}
-                                </div>
+                                <div className="text-2xl md:text-3xl font-black text-slate-800 tracking-tighter">{pr.savings}</div>
                             </div>
                         </div>
                     ))
@@ -64,8 +66,11 @@ const OptimizationTimeline = memo(({ prs }) => {
                             <GitPullRequest size={40} className="text-slate-200 hidden md:block" />
                         </div>
                         <h4 className="text-base md:text-xl font-black text-slate-800 tracking-tight">System Optimized</h4>
-                        <p className="text-slate-400 text-xs md:text-sm font-medium mt-2 max-w-[16.25rem]">No immediate action required. Our AI agents are continuously monitoring for resource leaks.</p>
-                        <button className="mt-4 md:mt-8 text-[0.5625rem] md:text-[0.625rem] font-black text-indigo-500 border-b-2 border-indigo-100 hover:border-indigo-500 transition-all uppercase tracking-widest pb-1">
+                        <p className="text-slate-400 text-xs md:text-sm font-medium mt-2 max-w-[16.25rem]">No immediate action required. AI agents are continuously monitoring for resource leaks.</p>
+                        <button
+                            onClick={() => setActivePage?.('prs')}
+                            className="mt-4 md:mt-8 text-[0.5625rem] md:text-[0.625rem] font-black text-indigo-500 border-b-2 border-indigo-100 hover:border-indigo-500 transition-all uppercase tracking-widest pb-1"
+                        >
                             Run Manual Scan
                         </button>
                     </div>

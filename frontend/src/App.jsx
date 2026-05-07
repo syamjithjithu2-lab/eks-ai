@@ -20,7 +20,10 @@ import PRHub from './components/PRHub';
 
 
 export default function App() {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
     const [activePage, setActivePage] = useState('overview');
+    const [navigationIntent, setNavigationIntent] = useState(null);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false); // mobile sidebar state
 
     const [clusters, setClusters] = useState([]);
@@ -34,8 +37,13 @@ export default function App() {
     const [logStream, setLogStream] = useState([]);
     const socketRef = useRef(null);
 
+    const handlePageNavigation = (page, intent = null) => {
+        setActivePage(page);
+        setNavigationIntent(intent);
+    };
+
     useEffect(() => {
-        const socket = io('http://localhost:3001', { reconnection: true, reconnectionDelay: 1000 });
+        const socket = io(API_BASE_URL, { reconnection: true, reconnectionDelay: 1000 });
         socketRef.current = socket;
 
         const handleNav = (e) => setActivePage(e.detail);
@@ -97,7 +105,13 @@ export default function App() {
             socket.disconnect(); 
             clearInterval(logTimer);
         };
-    }, []);
+    }, [API_BASE_URL]);
+
+    useEffect(() => {
+        if (activePage === 'incidents' && navigationIntent === 'incident-agent' && incidents.length > 0) {
+            setSelectedIncident(prev => prev || incidents[0]);
+        }
+    }, [activePage, navigationIntent, incidents]);
 
     const handleUpdateIncidentLogs = (incidentId, newLogs) => {
         setIncidents(prev => prev.map(inc => 
@@ -141,10 +155,10 @@ export default function App() {
         switch (activePage) {
             case 'overview':
                 return (
-                    <div className="p-4 md:p-6 lg:p-10 grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 auto-rows-max">
+                    <div className="overview-grid p-4 md:p-6 lg:p-10 grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 auto-rows-max">
                         {/* Metrics Column conceptually split */}
                         <div className="col-span-12">
-                            <SummaryCards />
+                            <SummaryCards incidents={incidents} prs={prs} clusters={filteredClusters} />
                         </div>
 
                         <div className="col-span-12">
@@ -157,21 +171,60 @@ export default function App() {
                         </div>
 
                         <div className="col-span-12 lg:col-span-8">
-                            <OptimizationTimeline prs={prs} />
+                            <OptimizationTimeline prs={prs} setActivePage={handlePageNavigation} />
                         </div>
 
                         <div className="col-span-12 lg:col-span-4 flex">
-                            <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-12 text-center border-white/40 flex flex-col justify-center items-center w-full">
-                                <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-6 border border-indigo-100">
-                                    <Activity className="text-indigo-600" size={32} />
+                            <div className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-8 border-white/40 flex flex-col w-full overflow-hidden">
+                                <div className="flex items-center justify-between mb-5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-9 h-9 bg-rose-50 rounded-xl flex items-center justify-center border border-rose-100">
+                                            <Activity className="text-rose-600" size={17} />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-black text-slate-800 tracking-tight">Active Alerts</p>
+                                            <p className="text-[0.55rem] font-bold text-slate-400 uppercase tracking-widest">Live incidents</p>
+                                        </div>
+                                    </div>
+                                    {incidents.length > 0 && (
+                                        <div className="flex items-center gap-1.5 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">
+                                            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse" />
+                                            <span className="text-[0.55rem] font-black text-rose-600 uppercase tracking-widest">{incidents.length}</span>
+                                        </div>
+                                    )}
                                 </div>
-                                <p className="text-2xl font-black text-slate-800 tracking-tight leading-tight">Cluster Intel</p>
-                                <p className="text-slate-500 mt-4 text-sm font-medium">Monitoring your pods in real-time. Check <span className="text-indigo-600 font-bold">Incidents</span> for auto-remediation.</p>
-                                <div onClick={() => window.dispatchEvent(new CustomEvent('nav-change', { detail: 'prs' }))}
-                                    className="mt-8 bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-xs shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all cursor-pointer"
+                                <div className="flex-1 space-y-3 overflow-auto custom-scrollbar">
+                                    {incidents.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center py-8 text-center opacity-50">
+                                            <span className="text-3xl mb-3">🛡️</span>
+                                            <p className="text-sm font-black text-slate-700">All Clear</p>
+                                            <p className="text-xs text-slate-400 mt-1">No active incidents</p>
+                                        </div>
+                                    ) : (
+                                        incidents.slice(0, 5).map((inc, i) => (
+                                            <div
+                                                key={inc.id || i}
+                                                onClick={() => handlePageNavigation('incidents')}
+                                                className="flex items-start gap-3 p-3 bg-white/70 rounded-2xl border border-slate-100 cursor-pointer hover:bg-white hover:border-rose-100 hover:shadow-sm transition-all group"
+                                            >
+                                                <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-1.5 ${inc.severity === 'Critical' ? 'bg-rose-500' : 'bg-amber-500'}`} />
+                                                <div className="min-w-0">
+                                                    <p className="text-xs font-black text-slate-800 truncate group-hover:text-rose-700 transition-colors">{inc.pod}</p>
+                                                    <p className="text-[0.55rem] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{inc.cluster}</p>
+                                                </div>
+                                                <span className={`ml-auto text-[0.5rem] font-black px-2 py-0.5 rounded-full border flex-shrink-0 ${
+                                                    inc.severity === 'Critical' ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-amber-50 text-amber-600 border-amber-200'
+                                                }`}>{inc.severity}</span>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                                <button
+                                    onClick={() => handlePageNavigation('incidents')}
+                                    className="mt-4 w-full text-[0.625rem] font-black text-indigo-600 uppercase tracking-widest py-2.5 border border-indigo-100 rounded-2xl hover:bg-indigo-50 transition-all"
                                 >
-                                    View Full Analytics
-                                </div>
+                                    View All Incidents →
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -186,6 +239,11 @@ export default function App() {
                                 <span className="text-[0.625rem] font-black bg-rose-50 text-rose-600 px-3 py-1 rounded-full border border-rose-100 uppercase tracking-[0.2em]">Live Analysis</span>
                             </h1>
                             <p className="text-slate-500 font-medium text-sm mt-1">Real-time root cause detection & remediation</p>
+                            {navigationIntent === 'incident-agent' && (
+                                <div className="mt-3 inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-xl px-3 py-2 text-[0.65rem] font-black uppercase tracking-wider">
+                                    Guided flow active: incident auto-selected, click "Initiate AI Root Cause Analysis"
+                                </div>
+                            )}
                         </div>
                         <div className="flex-1 flex flex-col lg:flex-row gap-4 md:gap-8 min-h-0">
                             <div className="w-full lg:w-[35%] h-[40%] lg:h-full">
@@ -198,6 +256,7 @@ export default function App() {
                                 <IncidentAnalysis 
                                     incident={selectedIncident} 
                                     onUpdateLogs={handleUpdateIncidentLogs}
+                                    autoOpenAnalyzePrompt={navigationIntent === 'incident-agent'}
                                 />
                             </div>
                         </div>
@@ -205,9 +264,9 @@ export default function App() {
                 );
 
             case 'agents':
-                return <AgentsPage clusters={clusters} incidents={incidents} prs={prs} />;
+                return <AgentsPage clusters={clusters} incidents={incidents} prs={prs} setActivePage={handlePageNavigation} />;
             case 'security':
-                return <SecurityPage />;
+                return <SecurityPage clusters={clusters} />;
             case 'observability':
                 return <ObservabilityPage
                     logStream={logStream}
@@ -217,7 +276,7 @@ export default function App() {
                     selectedPod={selectedPod}
                 />;
             case 'cost':
-                return <CostPage prs={prs} />;
+                return <CostPage prs={prs} clusters={clusters} autoGuideRun={navigationIntent === 'cost-agent'} />;
             case 'prs':
                 return <PRHub prs={prs} />;
 
@@ -232,12 +291,14 @@ export default function App() {
 
             <Sidebar
                 activePage={activePage}
-                setActivePage={setActivePage}
+                setActivePage={handlePageNavigation}
                 filteredClusters={filteredClusters}
                 selectedCluster={selectedCluster}
                 selectedNamespace={selectedNamespace}
                 selectedPod={selectedPod}
                 isConnected={isConnected}
+                isCollapsed={sidebarCollapsed}
+                onToggleCollapse={() => setSidebarCollapsed(v => !v)}
                 isOpen={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
             />
@@ -253,6 +314,8 @@ export default function App() {
                     setSelectedPod={setSelectedPod}
                     isConnected={isConnected}
                     onMenuClick={() => setSidebarOpen(true)}
+                    incidents={incidents}
+                    setActivePage={handlePageNavigation}
                 />
 
                 <div className="flex-1 min-h-0 flex flex-col overflow-y-auto custom-scrollbar bg-transparent">

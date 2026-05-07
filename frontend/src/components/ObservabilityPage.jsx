@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useMemo, memo } from 'react';
-import { Search, Play, Pause, AlertTriangle, Info, AlertCircle, Zap, Activity } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo, memo, useCallback } from 'react';
+import { Search, Play, Pause, AlertTriangle, Info, AlertCircle, Zap, Activity, Copy, Check, Download } from 'lucide-react';
 
 const LEVEL_CONFIG = {
     INFO:     { color: 'text-indigo-600',  bg: 'bg-indigo-50/30',  badge: 'bg-indigo-50 text-indigo-600 border-indigo-100',   icon: Info },
@@ -10,10 +10,42 @@ const LEVEL_CONFIG = {
 
 const LEVELS = ['ALL', 'INFO', 'WARN', 'ERROR', 'CRITICAL'];
 
+// ── Single log row with copy button ──────────────────────────────────────────
+const LogRow = memo(({ entry }) => {
+    const [copied, setCopied] = useState(false);
+    const cfg = LEVEL_CONFIG[entry.level] || LEVEL_CONFIG.INFO;
+
+    const handleCopy = useCallback((e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(entry.raw).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+        });
+    }, [entry.raw]);
+
+    return (
+        <div className={`flex items-start gap-2 md:gap-4 px-3 md:px-4 py-2 rounded-xl transition-all hover:bg-white hover:shadow-sm group border border-transparent hover:border-slate-100 ${cfg.bg} relative`}>
+            <span className="text-slate-600 shrink-0 font-bold opacity-80 hidden sm:inline">{entry.timestamp.substring(11, 23)}</span>
+            <span className={`shrink-0 text-[0.5rem] md:text-[0.5625rem] font-black px-1.5 md:px-2 py-0.5 rounded border uppercase tracking-widest min-w-[3.5rem] md:min-w-[4.375rem] text-center ${cfg.badge}`}>{entry.level}</span>
+            <span className="text-indigo-500 font-bold shrink-0 opacity-80 hidden md:inline">{entry.podName?.split('-').slice(0,2).join('-')}</span>
+            <span className="font-medium leading-relaxed text-slate-600 flex-1 min-w-0">{entry.message}</span>
+            {/* Copy button — only visible on hover */}
+            <button
+                onClick={handleCopy}
+                className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center hover:bg-slate-200 ml-auto"
+                title="Copy log line"
+            >
+                {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} className="text-slate-400" />}
+            </button>
+        </div>
+    );
+});
+
 const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster, selectedNamespace, selectedPod }) => {
     const [levelFilter, setLevelFilter] = useState('ALL');
     const [search, setSearch]           = useState('');
     const [autoScroll, setAutoScroll]   = useState(true);
+    const [exportMsg, setExportMsg]     = useState('');
     const bottomRef = useRef(null);
 
     const filtered = useMemo(() => {
@@ -29,13 +61,13 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
 
     const [frozenLogs, setFrozenLogs] = useState([]);
     useEffect(() => { if (autoScroll) setFrozenLogs(filtered); }, [filtered, autoScroll]);
-
-    const displayLogs = autoScroll ? filtered : frozenLogs;
+    const displayLogs = useMemo(() => {
+        const source = autoScroll ? filtered : frozenLogs;
+        return source.length > 600 ? source.slice(-600) : source;
+    }, [autoScroll, filtered, frozenLogs]);
 
     useEffect(() => {
-        if (autoScroll && bottomRef.current) {
-            bottomRef.current.scrollIntoView({ behavior: 'auto' });
-        }
+        if (autoScroll && bottomRef.current) bottomRef.current.scrollIntoView({ behavior: 'auto' });
     }, [displayLogs.length, autoScroll]);
 
     const counts = useMemo(() => {
@@ -44,17 +76,37 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
         return c;
     }, [filtered]);
 
+    const handleExport = useCallback(() => {
+        const text = displayLogs.map(e => e.raw).join('\n');
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `eks-logs-${Date.now()}.txt`; a.click();
+        URL.revokeObjectURL(url);
+        setExportMsg(`Exported ${displayLogs.length} lines`);
+        setTimeout(() => setExportMsg(''), 2500);
+    }, [displayLogs]);
+
     return (
-        <div className="p-4 md:p-6 lg:p-10 h-full flex flex-col gap-4 md:gap-8 lg:gap-10">
+        <div className="p-4 md:p-6 lg:p-10 min-h-full flex flex-col gap-4 md:gap-8 lg:gap-10">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-800 tracking-tight">Observability</h1>
                     <p className="text-slate-500 font-medium mt-1 text-sm">Real-time log intelligence & distributed tracing</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                     <div className="bg-white/80 border border-slate-300 py-2.5 px-4 rounded-2xl shadow-sm">
                         <span className="text-[0.625rem] font-black text-slate-800 uppercase tracking-widest">{filtered.length} EVENTS</span>
                     </div>
+                    {/* Export button */}
+                    <button
+                        onClick={handleExport}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm transition-all bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
+                        title="Export visible logs as .txt"
+                    >
+                        <Download size={14} />
+                        <span className="hidden sm:inline">{exportMsg || 'Export'}</span>
+                    </button>
                     <button
                         onClick={() => setAutoScroll(v => !v)}
                         className={`flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-xl ${autoScroll ? 'bg-indigo-600 text-white shadow-indigo-100 hover:bg-indigo-700' : 'bg-rose-50 text-rose-600 border border-rose-100 hover:bg-rose-100'}`}
@@ -69,8 +121,8 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
             {/* Stats — 2 cols on mobile, 4 on lg+ */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
                 {Object.entries(LEVEL_CONFIG).map(([level, cfg]) => (
-                    <div key={level} className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-4 md:p-6 flex items-center gap-3 md:gap-4 group">
-                        <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center border transition-all ${cfg.badge} group-hover:scale-110 shadow-sm`}>
+                    <div key={level} className="glass-card rounded-[1.5rem] md:rounded-[2rem] lg:rounded-[2.5rem] p-4 md:p-6 flex items-center gap-3 md:gap-4 group cursor-pointer" onClick={() => setLevelFilter(levelFilter === level ? 'ALL' : level)}>
+                        <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center border transition-all ${cfg.badge} group-hover:scale-110 shadow-sm ${levelFilter === level ? 'scale-110 ring-2 ring-indigo-300' : ''}`}>
                             <cfg.icon size={20} />
                         </div>
                         <div>
@@ -121,17 +173,7 @@ const ObservabilityPage = memo(({ logStream = [], clusters = [], selectedCluster
                         </div>
                     ) : (
                         <div className="space-y-1.5">
-                            {displayLogs.map((entry, i) => {
-                                const cfg = LEVEL_CONFIG[entry.level] || LEVEL_CONFIG.INFO;
-                                return (
-                                    <div key={i} className={`flex items-start gap-2 md:gap-4 px-3 md:px-4 py-2 rounded-xl transition-all hover:bg-white hover:shadow-sm group border border-transparent hover:border-slate-100 ${cfg.bg}`}>
-                                        <span className="text-slate-600 shrink-0 font-bold opacity-80 hidden sm:inline">{entry.timestamp.substring(11, 23)}</span>
-                                        <span className={`shrink-0 text-[0.5rem] md:text-[0.5625rem] font-black px-1.5 md:px-2 py-0.5 rounded border uppercase tracking-widest min-w-[3.5rem] md:min-w-[4.375rem] text-center ${cfg.badge}`}>{entry.level}</span>
-                                        <span className="text-indigo-500 font-bold shrink-0 opacity-80 hidden md:inline">{entry.podName?.split('-').slice(0,2).join('-')}</span>
-                                        <span className="font-medium leading-relaxed text-slate-600">{entry.message}</span>
-                                    </div>
-                                );
-                            })}
+                            {displayLogs.map((entry, i) => <LogRow key={i} entry={entry} />)}
                             <div ref={bottomRef} />
                         </div>
                     )}

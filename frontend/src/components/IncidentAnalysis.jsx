@@ -155,8 +155,14 @@ function ConfirmModal({ onEditFirst, onAnalyzeNow, onDismiss }) {
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
-const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
+const IncidentAnalysis = memo(({ incident, onUpdateLogs, autoOpenAnalyzePrompt = false }) => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
     const [isEditing, setIsEditing] = useState(false);
+    const displayedLogs = useMemo(() => {
+        const logs = incident?.logs || [];
+        return logs.length > 400 ? logs.slice(-400) : logs;
+    }, [incident?.logs]);
+
     const [localLogs, setLocalLogs] = useState('');
     const [showConfirm, setShowConfirm] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -170,6 +176,12 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
         setAnalysisResult(null);
         setLogsExpanded(true);
     }, [incident?.id]);
+
+    useEffect(() => {
+        if (autoOpenAnalyzePrompt && incident && !isEditing && !isAnalyzing && !analysisResult) {
+            setShowConfirm(true);
+        }
+    }, [autoOpenAnalyzePrompt, incident, isEditing, isAnalyzing, analysisResult]);
 
     if (!incident) {
         return (
@@ -214,7 +226,7 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
         setAnalysisResult(null);
         setLogsExpanded(false); // Auto-collapse logs to maximize AI response area
         try {
-            const response = await fetch('http://localhost:3001/chat', {
+            const response = await fetch(`${API_BASE_URL}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -393,11 +405,16 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
                         </div>
                     )}
                 </div>
+                {(incident.logs?.length || 0) > 400 && (
+                    <p className="text-[0.625rem] font-bold text-slate-400 mb-4 px-1 uppercase tracking-wider">
+                        Showing latest 400 events for smooth rendering
+                    </p>
+                )}
 
                 <div className="bg-slate-900 rounded-[2.5rem] font-mono overflow-hidden border border-slate-800 shadow-2xl flex flex-col flex-shrink-0">
                     {!isEditing ? (
-                        <div className="p-8 md:p-10 space-y-1.5 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-                            {incident.logs?.map((log, i) => (
+                        <div className="p-8 md:p-10 space-y-1.5 bg-slate-900">
+                            {displayedLogs.map((log, i) => (
                                 <div key={i} className={`leading-relaxed py-2 border-b border-white/5 last:border-0 text-[0.875rem] ${getLogColor(log)} ${log === incident.triggerLog ? 'bg-rose-500/10 -mx-10 px-10 border-l-4 border-rose-500 font-bold' : ''}`}>
                                     <span className="opacity-20 mr-4 select-none tabular-nums font-bold">{(i + 1).toString().padStart(3, '0')}</span>
                                     {log}
@@ -405,13 +422,37 @@ const IncidentAnalysis = memo(({ incident, onUpdateLogs }) => {
                             ))}
                         </div>
                     ) : (
-                        <textarea
-                            value={localLogs}
-                            onChange={(e) => setLocalLogs(e.target.value)}
-                            spellCheck="false"
-                            className="w-full min-h-[500px] bg-slate-900 text-slate-300 p-8 md:p-10 focus:outline-none resize-none leading-relaxed text-[0.875rem] font-mono"
-                            placeholder="Edit logs here..."
-                        />
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border-t border-slate-800/70">
+                            <div className="border-b lg:border-b-0 lg:border-r border-slate-800/70">
+                                <div className="px-8 py-4 border-b border-slate-800/70 bg-slate-900/60">
+                                    <p className="text-[0.625rem] font-black uppercase tracking-widest text-slate-400">Edit Log Stream</p>
+                                </div>
+                                <textarea
+                                    value={localLogs}
+                                    onChange={(e) => setLocalLogs(e.target.value)}
+                                    spellCheck="false"
+                                    className="w-full min-h-[500px] bg-slate-900 text-slate-300 p-8 md:p-10 focus:outline-none resize-none leading-relaxed text-[0.875rem] font-mono"
+                                    placeholder="Edit logs here..."
+                                />
+                            </div>
+                            <div>
+                                <div className="px-8 py-4 border-b border-slate-800/70 bg-slate-900/60">
+                                    <p className="text-[0.625rem] font-black uppercase tracking-widest text-slate-400">Live Severity Preview</p>
+                                </div>
+                                <div className="p-8 md:p-10 space-y-1.5 min-h-[500px]">
+                                    {localLogs.split('\n').filter(Boolean).length === 0 ? (
+                                        <p className="text-[0.75rem] font-bold text-slate-500">Start typing to preview severity colors.</p>
+                                    ) : (
+                                        localLogs.split('\n').map((log, i) => (
+                                            <div key={i} className={`leading-relaxed py-2 border-b border-white/5 last:border-0 text-[0.875rem] ${getLogColor(log)} ${log === incident.triggerLog ? 'bg-rose-500/10 -mx-10 px-10 border-l-4 border-rose-500 font-bold' : ''}`}>
+                                                <span className="opacity-20 mr-4 select-none tabular-nums font-bold">{(i + 1).toString().padStart(3, '0')}</span>
+                                                {log || <span className="text-slate-600"> </span>}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
