@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import 'dotenv/config';
+import githubRouter from './github.js';
 
 const app = express();
 app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
@@ -73,9 +74,9 @@ let incidents = [
     rootCause: "Memory limit too low (512Mi) — container OOMKilled",
     triggerLog: `${new Date().toISOString()} [CRITICAL] prometheus-1: OOMKilled - container memory limit exceeded`,
     logs: [
-        `${new Date().toISOString()} [INFO] prometheus-1: Health check passed`,
-        `${new Date().toISOString()} [WARN] prometheus-1: Memory usage at 95% of limit`,
-        `${new Date().toISOString()} [CRITICAL] prometheus-1: OOMKilled - container memory limit exceeded`
+      `${new Date().toISOString()} [INFO] prometheus-1: Health check passed`,
+      `${new Date().toISOString()} [WARN] prometheus-1: Memory usage at 95% of limit`,
+      `${new Date().toISOString()} [CRITICAL] prometheus-1: OOMKilled - container memory limit exceeded`
     ],
   }
 ];
@@ -222,12 +223,12 @@ setInterval(() => {
           const rootCause = isOOM
             ? 'Memory limit too low (512Mi) — container OOMKilled'
             : isCrash ? 'Container failed to start — CrashLoopBackOff detected'
-            : isConnRefused ? 'Upstream service unreachable — ECONNREFUSED'
-            : 'Node memory pressure caused pod eviction';
+              : isConnRefused ? 'Upstream service unreachable — ECONNREFUSED'
+                : 'Node memory pressure caused pod eviction';
 
           // Check if we already have an active incident for this pod and severity
           const existingIndex = incidents.findIndex(inc => inc.podId === pod.id && inc.severity === severity);
-          
+
           if (existingIndex !== -1) {
             // Update existing incident instead of creating a new ID
             incidents[existingIndex].timestamp = new Date().toISOString();
@@ -283,6 +284,11 @@ setInterval(() => {
 app.get('/clusters', (req, res) => res.json(clusters));
 app.get('/incidents', (req, res) => res.json(incidents));
 app.get('/prs', (req, res) => res.json(prs));
+
+// ─── GitHub Integration ───────────────────────────────────────────────────────
+// GET  /github/file?path=<file-path>   → Read a file from GitHub
+// POST /github/create-pr               → Read → Patch → Branch → Commit → PR
+app.use('/github', githubRouter);
 app.get('/logs/:podId', (req, res) => {
   for (const cluster of clusters) {
     for (const ns of cluster.namespaces) {
@@ -400,7 +406,7 @@ app.post('/chat', async (req, res) => {
     }
 
     const data = await response.json();
-    
+
     // API Gateway Proxy responses wrap the actual content in a 'body' string
     if (data.body) {
       const rawBody = data.body;
@@ -416,11 +422,11 @@ app.post('/chat', async (req, res) => {
         console.warn('AI returned non-JSON body, wrapping for UI compatibility.');
         return res.json({
           answer: typeof rawBody === 'string' ? rawBody : JSON.stringify(rawBody),
-          suggestions: [] 
+          suggestions: []
         });
       }
     }
-    
+
     res.json(data);
   } catch (err) {
     console.error('API Gateway error:', err);
@@ -462,6 +468,6 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3001, () => {
+httpServer.listen(3002, () => {
   console.log('🚀 KubeDynatrace Backend running on http://localhost:3001');
 });
