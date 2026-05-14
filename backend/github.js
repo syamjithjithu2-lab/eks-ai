@@ -452,3 +452,15 @@ router.post('/create-pr', async (req, res) => {
 });
 
 export default router;
+
+// ── Named exports for internal use by server.js ──────────────────────────────
+export {
+  getOctokit,
+  getGitHubConfig,
+  readGitHubFile,
+  applyPatch,
+  getBranchSha,
+  createBranch,
+  commitFile,
+  createPullRequest,
+};

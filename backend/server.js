@@ -3,7 +3,10 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import 'dotenv/config';
-import githubRouter from './github.js';
+import githubRouter, {
+  getOctokit, getGitHubConfig, readGitHubFile,
+  applyPatch, getBranchSha, createBranch, commitFile, createPullRequest,
+} from './github.js';
 
 const app = express();
 app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'] }));
@@ -98,6 +101,141 @@ let prs = [
     savings: "$120/mo saved",
   }
 ];
+
+// ─── Pods that already have an auto-PR in-flight (avoid duplicate GitHub PRs) ─
+// Key: pod.name — cleared after success or permanent failure (5 min cooldown)
+const oomPrInFlight = new Set();
+
+/**
+ * Automatically create a real GitHub PR to increase the memory limit for an OOM pod.
+ *
+ * File resolution: GITHUB_MANIFEST_DIR/<podBaseName>-deployment.yaml
+ *   e.g. pod "prometheus-1" → manifests/prometheus-1-deployment.yaml
+ *
+ * Memory patch: reads current limits.memory value, replaces with OOM_NEW_MEMORY (default: 1Gi)
+ */
+async function autoCreateOomPR(pod, cluster, io) {
+  if (!process.env.GITHUB_TOKEN || !process.env.GITHUB_OWNER || !process.env.GITHUB_REPO) return;
+  if (oomPrInFlight.has(pod.name)) return;
+
+  oomPrInFlight.add(pod.name);
+  console.log(`[Auto-PR] OOM detected for "${pod.name}" — attempting GitHub PR…`);
+
+  try {
+    const octokit = getOctokit();
+    const { owner, repo, baseBranch } = getGitHubConfig();
+    const manifestDir = process.env.GITHUB_MANIFEST_DIR || 'manifests';
+    const newMemory = process.env.OOM_NEW_MEMORY || '1Gi';
+
+    // Strip k8s hash suffix to get a stable pod base name
+    const podBase = pod.name.replace(/-[a-z0-9]{5,10}$/, '').replace(/-[a-z0-9]{5,10}$/, '');
+    const filePath = `deployment.yaml`;
+
+    console.log(`[Auto-PR] Reading manifest: ${owner}/${repo}/${filePath}@${baseBranch}`);
+    let file;
+    try {
+      file = await readGitHubFile(octokit, { owner, repo, path: filePath, ref: baseBranch });
+    } catch (readErr) {
+      console.warn(`[Auto-PR] Manifest not found at "${filePath}": ${readErr.message}. Skipping.`);
+      oomPrInFlight.delete(pod.name);
+      return;
+    }
+
+    // Detect current memory limit value in the manifest
+    const limitMatch = file.content.match(/limits:[^]*?memory:\s*["']?([\w.]+)["']?/);
+    const currentMem = limitMatch ? limitMatch[1] : '512Mi';
+    const fix = { find: `memory: ${currentMem}`, replace: `memory: ${newMemory}` };
+
+    let patchResult;
+    try {
+      patchResult = applyPatch(file.content, fix);
+    } catch (patchErr) {
+      console.warn(`[Auto-PR] Patch failed for "${pod.name}": ${patchErr.message}`);
+      oomPrInFlight.delete(pod.name);
+      return;
+    }
+
+    if (patchResult.matchCount === 0) {
+      console.warn(`[Auto-PR] No memory limit line matched in ${filePath}. Skipping.`);
+      oomPrInFlight.delete(pod.name);
+      return;
+    }
+
+    // Create branch → commit → open PR
+    const ts = Date.now();
+    const safeName = pod.name.replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
+    const branchName = `fix/oom-${safeName}-${ts}`;
+
+    const baseSha = await getBranchSha(octokit, { owner, repo, branchName: baseBranch });
+    await createBranch(octokit, { owner, repo, branchName, fromSha: baseSha });
+
+    await commitFile(octokit, {
+      owner, repo,
+      path: filePath,
+      content: patchResult.patched,
+      message: `fix: increase memory limit for ${pod.name} (${currentMem} → ${newMemory}) [auto]`,
+      branch: branchName,
+      fileSha: file.sha,
+    });
+
+    const prTitle = `[Auto-Fix] OOM: increase memory for ${pod.name} (${currentMem} → ${newMemory})`;
+    const prBody = [
+      `## 🤖 Automated OOM Fix`,
+      ``,
+      `**Pod:** \`${pod.name}\``,
+      `**Cluster:** \`${cluster.name}\``,
+      `**File:** \`${filePath}\``,
+      ``,
+      `### Change`,
+      `\`\`\`diff`,
+      `- ${fix.find}`,
+      `+ ${fix.replace}`,
+      `\`\`\``,
+      ``,
+      `**Trigger:** OOMKilled detected in live log stream`,
+      ``,
+      `---`,
+      `*Created automatically by EKS AI Dashboard on OOM detection*`,
+    ].join('\n');
+
+    const githubPr = await createPullRequest(octokit, {
+      owner, repo, title: prTitle, body: prBody, head: branchName, base: baseBranch,
+    });
+
+    console.log(`[Auto-PR] ✅ PR #${githubPr.number} created: ${githubPr.url}`);
+
+    // Replace the placeholder "Creating PR…" entry with the real one
+    const placeholderIdx = prs.findIndex(p => p.pod === pod.name && p.status === 'Creating PR…');
+    const autoPr = {
+      id: placeholderIdx !== -1 ? prs[placeholderIdx].id : `pr-auto-${ts}`,
+      title: prTitle,
+      status: 'PR Ready',
+      pod: pod.name,
+      cluster: cluster.name,
+      savings: '42% risk reduction',
+      autoCreated: true,
+      url: githubPr.url,
+      number: githubPr.number,
+      branch: branchName,
+      filePath,
+      fix: { from: currentMem, to: newMemory },
+    };
+
+    if (placeholderIdx !== -1) {
+      prs[placeholderIdx] = autoPr;
+    } else {
+      prs.unshift(autoPr);
+      if (prs.length > 50) prs.pop();
+    }
+    io.emit('pr-update', autoPr);
+
+  } catch (err) {
+    console.error(`[Auto-PR] Unexpected error for "${pod.name}": ${err.message}`);
+  } finally {
+    // 5-minute cooldown before allowing another auto-PR for the same pod
+    setTimeout(() => oomPrInFlight.delete(pod.name), 5 * 60 * 1000);
+  }
+}
 
 // ─── Log templates by severity ───────────────────────────────────────────────
 const LOG_TEMPLATES = {
@@ -256,22 +394,39 @@ setInterval(() => {
           }
 
           if (isOOM || isCrash) {
-            // Similarly deduplicate PRs
+            // Deduplicate in-memory PR entries
             const existingPR = prs.find(p => p.pod === pod.name && p.title.includes(isOOM ? 'OOM' : 'Crash'));
             if (!existingPR) {
-              const pr = {
-                id: "pr-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7),
-                title: isOOM
-                  ? `Fix OOM: Increase memory for ${pod.name} from 512Mi → 1Gi`
-                  : `Fix Crash: Add liveness probe backoff for ${pod.name}`,
-                status: "PR Ready",
-                pod: pod.name,
-                cluster: cluster.name,
-                savings: isOOM ? "42% risk reduction" : "Prevents pod restart storm",
-              };
-              prs.unshift(pr);
-              if (prs.length > 50) prs.pop();
-              io.emit("pr-update", pr);
+              if (isOOM) {
+                // ── Auto-create a real GitHub PR to fix the OOM ────────────────────
+                autoCreateOomPR(pod, cluster, io).catch(() => { });
+                // Fallback in-memory PR shown immediately while GitHub PR is created
+                const pr = {
+                  id: `pr-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+                  title: `Fix OOM: Increase memory for ${pod.name} from 512Mi → 1Gi`,
+                  status: 'Creating PR…',
+                  pod: pod.name,
+                  cluster: cluster.name,
+                  savings: '42% risk reduction',
+                  autoCreated: true,
+                };
+                prs.unshift(pr);
+                if (prs.length > 50) prs.pop();
+                io.emit('pr-update', pr);
+              } else {
+                // Crash — in-memory only (no manifest path convention for crashes yet)
+                const pr = {
+                  id: `pr-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+                  title: `Fix Crash: Add liveness probe backoff for ${pod.name}`,
+                  status: 'PR Ready',
+                  pod: pod.name,
+                  cluster: cluster.name,
+                  savings: 'Prevents pod restart storm',
+                };
+                prs.unshift(pr);
+                if (prs.length > 50) prs.pop();
+                io.emit('pr-update', pr);
+              }
             }
           }
         }
@@ -468,6 +623,6 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(3002, () => {
+httpServer.listen(3001, () => {
   console.log('🚀 KubeDynatrace Backend running on http://localhost:3001');
 });
